@@ -14,5 +14,5 @@ The textbook is "《数值线性代数》，徐树方，北京大学出版社".
 4. Basic `Timer` class for speed measurement. 
 
 ### Note for homework
-+ Homework are named `homework$chapterNum$_$questionNum$` in `src/`;
++ Homework are named `chap$chapterNum$` with functions named `homework$chapterNum$_$questionNum$` in `src/`;
 
