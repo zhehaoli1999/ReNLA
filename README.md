@@ -1,7 +1,7 @@
-# Re:Zero - Utility Library in Numerical Linear Algebra World 
+# Re:Zero - Start Writing Utility Library in Numerical Linear Algebra World 
 
-I am Richard from USTC, and I write this library for the course "Numerical Linear Algebra".
-The textbook is "《数值线性代数》，徐树方，北京大学出版社". 
+I am Richard from USTC, and I write this library for the course "Numerical Linear Algebra" which I am taken this semester.
+The textbook we are using is "《数值线性代数》，徐树方，北京大学出版社". 
 
 ### Feature
 1. Basic `Vec` class for column vectors with basic slicing supported. 
