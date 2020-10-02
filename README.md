@@ -1,6 +1,6 @@
 # Re:Zero - Start Writing Utility Library in Numerical Linear Algebra World 
 
-I am Richard from USTC, and I write this library for the course "Numerical Linear Algebra" which I am taken this semester.
+I am Richard from USTC, and I am developing this library for the course "Numerical Linear Algebra" which I am taking this semester.
 The textbook we are using is "《数值线性代数》，徐树方，北京大学出版社". 
 
 ### Feature
