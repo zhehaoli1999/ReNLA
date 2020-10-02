@@ -66,6 +66,22 @@ Matrix::Matrix(int nRow, int nCol) : Matrix::Matrix{nRow, nCol, 0.0}
 Matrix::Matrix(int nRow) : Matrix::Matrix{nRow, nRow}
 {}
 
+vector<int> Matrix::shape() {
+    return {nRow, nCol};
+}
+
+Matrix Matrix::transpose() {
+    vector<vector<float>> mat(nCol);
+    for(int i = 0; i < nRow; i++)
+    {
+        for(int j = 0; j < nCol; j++)
+        {
+            mat[j].push_back((*this)[{i,j}]);
+        }
+    }
+    return Matrix(mat);
+}
+
 Matrix Matrix::setNum(float num)
 {
     for(int i = 0; i < nRow; i++)

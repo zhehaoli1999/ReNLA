@@ -19,6 +19,10 @@ namespace NLA {
         Matrix(int nRow, int nCol); // Create a zero matrix
         Matrix(int nRow);
 
+        vector<int> shape();
+
+        Matrix transpose();
+
         Matrix setNum(float num);
         Matrix setIdentity();
         Matrix setZero();

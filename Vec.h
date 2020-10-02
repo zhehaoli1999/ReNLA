@@ -22,10 +22,16 @@ namespace NLA {
         Vec setSlice(int begin, int end, Vec v);
         Vec getSlice(int begin, int end);
         Vec addToSlice(int begin, int end, Vec v);
+        Vec mulToSlice(int begin, int end, float a);
 
         friend ostream& operator<< (ostream& os, Vec);
         Vec operator+(Vec& b);
+        Vec operator+(float b);
+
         Vec operator-(Vec& b);
+        Vec operator-(float b);
+        Vec operator-();
+
         Vec operator*(float b);
         Vec operator/(float b);
 

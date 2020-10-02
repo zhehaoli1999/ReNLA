@@ -11,16 +11,19 @@
 namespace NLA {
     class LinearSolver {
     public:
-        LinearSolver(Matrix& A, Vec& x, Vec&b);
+        LinearSolver(Matrix& A, Vec&b);
 
-        Vec& diagSolve();
+        static Matrix LUdecompose(Matrix& m);
+        static Matrix LUdecomposeColPivot(Matrix& m, Matrix& P);
 
-        Vec& basicGaussSolve();
-        Vec& colPivotSolve();
+        Vec lowTriangleSolve();
+        Vec upTriangleSolve();
+
+        Vec gaussSolve(bool isColPivot = true);
+
 
     private:
         Matrix A;
-        Vec x;
         Vec b;
     };
 }

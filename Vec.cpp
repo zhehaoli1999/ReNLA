@@ -24,15 +24,16 @@ float& Vec::operator[](const int idx) {
 
 Vec Vec::operator[](const pair<int, int> slice)
 {
-    assert(slice.second >= slice.first && slice.second <= this->data.size() - 1);
+    assert(slice.second >= slice.first && slice.second <= (*this).size()
+        && slice.first>=0);
     return Vec(vector(this->data.begin()+slice.first,
-                        this->data.begin()+slice.second + 1));
+                        this->data.begin()+slice.second));
 }
 
 Vec Vec::setSlice(int begin, int end, Vec v)
 {
-    assert(v.data.size() == end - begin + 1);
-    for(int i = begin; i <= end; i++)
+    assert(v.data.size() == end - begin);
+    for(int i = begin; i < end; i++)
     {
         (*this)[i] = v[i-begin];
     }
@@ -41,6 +42,23 @@ Vec Vec::setSlice(int begin, int end, Vec v)
 
 Vec Vec::getSlice(int begin, int end)
 {
+    return (*this)[{begin, end}];
+}
+
+Vec Vec::addToSlice(int begin, int end, Vec v) {
+    assert(v.data.size() == end - begin);
+    for(int i = begin; i < end; i++)
+    {
+        (*this)[i] += v[i-begin];
+    }
+    return (*this)[{begin, end}];
+}
+
+Vec Vec::mulToSlice(int begin, int end, float a) {
+    for(int i = begin; i < end; i++)
+    {
+        (*this)[i] *= a;
+    }
     return (*this)[{begin, end}];
 }
 
@@ -63,6 +81,35 @@ Vec Vec::operator+(Vec &b)
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] + b[i];
+    }
+    return Vec(v);
+}
+Vec Vec::operator+(float b)
+{
+    vector<float> v(this->data.size());
+    for(int i =0; i < v.size(); i++)
+    {
+        v[i] = (*this)[i] + b;
+    }
+    return Vec(v);
+}
+
+Vec Vec::operator-(float b)
+{
+    vector<float> v(this->data.size());
+    for(int i =0; i < v.size(); i++)
+    {
+        v[i] = (*this)[i] - b;
+    }
+    return Vec(v);
+}
+
+Vec Vec::operator-()
+{
+    vector<float> v(this->data.size());
+    for(int i =0; i < v.size(); i++)
+    {
+        v[i] = -(*this)[i];
     }
     return Vec(v);
 }
