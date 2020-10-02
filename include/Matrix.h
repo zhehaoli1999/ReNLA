@@ -12,10 +12,10 @@ using namespace std;
 namespace NLA {
     class Matrix {
     public:
-        Matrix(vector<vector<float>> v, bool isColPrior=false);
+        Matrix(vector<vector<double>> v, bool isColPrior=false);
         Matrix(vector<Vec>);
-        Matrix(vector<float>);
-        Matrix(int nRow, int nCol, float num);
+        Matrix(vector<double>);
+        Matrix(int nRow, int nCol, double num);
         Matrix(int nRow, int nCol); // Create a zero matrix
         Matrix(int nRow);
 
@@ -23,16 +23,16 @@ namespace NLA {
 
         Matrix transpose();
 
-        Matrix setNum(float num);
+        Matrix setNum(double num);
         Matrix setIdentity();
         Matrix setZero();
-        Matrix setTripleDiag(float lambda, float lambdaUp, float lambdaDown);
+        Matrix setTripleDiag(double lambda, double lambdaUp, double lambdaDown);
 
         // get entry of Matrix[col][row]
         Vec& operator[](const int idx);
 
         // get entry of Matrix[{row, col}]
-        float& operator[](const pair<int, int>);
+        double& operator[](const pair<int, int>);
 
         Matrix operator[](const pair<pair<int, int>, pair<int, int>>);
         Matrix setSlice(pair<pair<int, int>, pair<int, int>>, Matrix&);
@@ -40,19 +40,21 @@ namespace NLA {
 
         Matrix operator+(Matrix &);
         Matrix operator+=(Matrix &);
-        Matrix operator+(float);
-        Matrix operator+=(float);
+        Matrix operator+(double);
+        Matrix operator+=(double);
 
         Matrix operator-(Matrix &);
-        Matrix operator-(float);
+        Matrix operator-(double);
 
-        Matrix operator*(float);
-        Matrix operator*=(float);
+        Matrix operator*(double);
+        Matrix operator*=(double);
 
         // Matrix multiplication
         Matrix operator*(Matrix& b);
         Matrix elementwiseMul(Matrix &b);
         friend ostream& operator<<(ostream& os, Matrix a);
+
+        Matrix swapRow(int idx1, int idx2);
 
     protected:
         vector<Vec> colVecArray;

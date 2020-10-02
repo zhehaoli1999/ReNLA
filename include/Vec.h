@@ -11,38 +11,44 @@ using namespace std;
 namespace NLA {
     class Vec {
     public:
-        Vec(vector<float>);
+        Vec(vector<double>);
         Vec(int n);
 
         int size();
 
-        float& operator[](const int idx);
+        double& operator[](const int idx);
         Vec operator[](const pair<int, int>); // Vec slice
 
         Vec setSlice(int begin, int end, Vec v);
         Vec getSlice(int begin, int end);
         Vec addToSlice(int begin, int end, Vec v);
-        Vec mulToSlice(int begin, int end, float a);
+        Vec mulToSlice(int begin, int end, double a);
 
         friend ostream& operator<< (ostream& os, Vec);
         Vec operator+(Vec& b);
-        Vec operator+(float b);
+        Vec operator+(double b);
 
         Vec operator-(Vec& b);
-        Vec operator-(float b);
+        Vec operator-(double b);
         Vec operator-();
 
-        Vec operator*(float b);
-        Vec operator/(float b);
+        Vec operator*(double b);
+        Vec operator/(double b);
 
-        float norm2();
-        float norm1();
-        float dist(Vec& b);
+        double norm2();
+        double norm1();
+        double dist(Vec& b);
         Vec normalize();
-        float dot(Vec& b);
+        double dot(Vec& b);
+
+        int maxAbsIdx(int begin, int end);
+        int maxIdx(int begin, int end);
+        int minIdx(int begin, int end);
+
+        Vec swap(int idx1, int idx2);
 
     private:
-        vector<float> data;
+        vector<double> data;
     };
 }
 

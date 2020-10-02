@@ -2,23 +2,24 @@
 // Created by 李喆昊 on 2020/10/2.
 //
 
-#include "Vec.h"
+#include "../include/Vec.h"
 #include <cmath>
+#include <algorithm>
 using namespace NLA;
 
-Vec::Vec(vector<float>v) : data{v}
+Vec::Vec(vector<double>v) : data{v}
 {}
 
 Vec::Vec(int n)
 {
-    data = vector<float>(n, 0.0);
+    data = vector<double>(n, 0.0);
 }
 
 int Vec::size()
 {
     return data.size();
 }
-float& Vec::operator[](const int idx) {
+double& Vec::operator[](const int idx) {
     return this->data[idx];
 }
 
@@ -54,7 +55,7 @@ Vec Vec::addToSlice(int begin, int end, Vec v) {
     return (*this)[{begin, end}];
 }
 
-Vec Vec::mulToSlice(int begin, int end, float a) {
+Vec Vec::mulToSlice(int begin, int end, double a) {
     for(int i = begin; i < end; i++)
     {
         (*this)[i] *= a;
@@ -77,16 +78,16 @@ ostream& NLA::operator<<(ostream& os, Vec x)
 Vec Vec::operator+(Vec &b)
 {
     assert(this->data.size() == b.data.size());
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] + b[i];
     }
     return Vec(v);
 }
-Vec Vec::operator+(float b)
+Vec Vec::operator+(double b)
 {
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] + b;
@@ -94,9 +95,9 @@ Vec Vec::operator+(float b)
     return Vec(v);
 }
 
-Vec Vec::operator-(float b)
+Vec Vec::operator-(double b)
 {
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] - b;
@@ -106,7 +107,7 @@ Vec Vec::operator-(float b)
 
 Vec Vec::operator-()
 {
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = -(*this)[i];
@@ -117,7 +118,7 @@ Vec Vec::operator-()
 Vec Vec::operator-(Vec &b)
 {
     assert(this->data.size() == b.data.size());
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] - b[i];
@@ -125,9 +126,9 @@ Vec Vec::operator-(Vec &b)
     return Vec(v);
 }
 
-Vec Vec::operator*(float b)
+Vec Vec::operator*(double b)
 {
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] * b;
@@ -135,13 +136,50 @@ Vec Vec::operator*(float b)
     return Vec(v);
 }
 
-Vec Vec::operator/(float b)
+Vec Vec::operator/(double b)
 {
     assert(fabs(b - 0.0) > 1e-6);
-    vector<float> v(this->data.size());
+    vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = (*this)[i] / b;
     }
     return Vec(v);
+}
+
+int Vec::maxAbsIdx(int begin, int end)
+{
+    assert(begin >=0 && end >= begin && end <= (*this).size());
+    int idx = begin;
+    double max = fabs((*this)[begin]);
+    for(int i = begin + 1; i < end; i++)
+    {
+        if((*this)[i] > max)
+            idx = i;
+    }
+    return idx;
+}
+
+int Vec::maxIdx(int begin, int end)
+{
+    assert(begin >=0 && end >= begin && end <= (*this).size());
+    auto iter = std::max_element(this->data.begin() + begin,this->data.begin() + end);
+    int idx = iter - this->data.begin();
+    return idx;
+}
+
+int Vec::minIdx(int begin, int end)
+{
+    assert(begin >=0 && end >= begin && end <= (*this).size());
+    auto iter = std::min_element(this->data.begin() + begin,this->data.begin() + end);
+    int idx = iter - this->data.begin();
+    return idx;
+}
+Vec Vec::swap(int idx1, int idx2)
+{
+    assert(idx1 >=0 && idx1 < (*this).size() && idx2 >=0 && idx2 <(*this).size());
+    double temp = (*this)[idx1];
+    (*this)[idx1] = (*this)[idx2];
+    (*this)[idx2] = temp;
+    return (*this);
 }

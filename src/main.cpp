@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "Matrix.h"
-#include "Vec.h"
-#include "LinearSolver.h"
+#include "../include/Matrix.h"
+#include "../include/Vec.h"
+#include "../include/LinearSolver.h"
 using namespace std;
 using namespace NLA;
 
@@ -35,14 +35,19 @@ void VecTest()
     Vec x({1,2,3});
     cout << x;
     cout << "======= slice ========"<< endl;
-    cout << x[{0,1}];
+    cout << x[{0,2}];
     cout << "======= set slice ========"<< endl;
-    x.setSlice(1,2, x[{0,1}]);
+    x.setSlice(1,3, x[{0,2}]);
     cout << x;
     cout << "======= add to slice ========"<< endl;
-    x.addToSlice(1,2, -x[{0,1}]);
+    x.addToSlice(1,3, -x[{0,2}]);
     cout << x;
     cout << -x;
+    cout << "======= max & min ========"<< endl;
+    cout << x.maxIdx(0, 3);
+    cout << x.minIdx(0,3);
+    cout << "======= swap ========"<< endl;
+    cout << x.swap(0,1);
 }
 
 void SolveTest()
@@ -64,10 +69,26 @@ void LUtest()
     cout << A;
     cout << LinearSolver::LUdecompose(A);
 }
-int main() {
-    //MatrixTest();
-    //VecTest();
-    //SolveTest();
-    LUtest();
-    return 0;
+
+void gaussTest()
+{
+    Matrix A = Matrix(3,3).setTripleDiag(2,3,1);
+    Vec b({1,2,3});
+    cout << "======= A ========"<< endl;
+    cout << A;
+    cout << "======= b ========"<< endl;
+    cout << b;
+    cout << "======= gauss solver result ========"<< endl;
+    cout << LinearSolver(A,b).gaussSolve(false);
+    cout << "======= gauss solver result with column pivot ========"<< endl;
+    cout << LinearSolver(A,b).gaussSolve();
 }
+
+//int main() {
+//    //MatrixTest();
+//    //VecTest();
+//    //SolveTest();
+//    //LUtest();
+//    //gaussTest();
+//    return 0;
+//}

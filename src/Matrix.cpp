@@ -1,7 +1,7 @@
 //
 // Created by 李喆昊 on 2020/9/29.
 //
-#include "Matrix.h"
+#include "../include/Matrix.h"
 
 using namespace NLA;
 
@@ -12,7 +12,7 @@ Matrix::Matrix(vector<Vec> v) : colVecArray(v)
     nRow = v[0].size();
 }
 
-Matrix::Matrix(vector<vector<float> > v, bool isColPrior)
+Matrix::Matrix(vector<vector<double> > v, bool isColPrior)
 {
     assert(v.size() > 0);
     assert(v[0].size() > 0);
@@ -28,7 +28,7 @@ Matrix::Matrix(vector<vector<float> > v, bool isColPrior)
         nCol = v[0].size();
         for(int i = 0; i < nCol; i++)
         {
-            vector<float> colVec;
+            vector<double> colVec;
             for(int j = 0; j < nRow; j++)
             {
                 colVec.push_back(v[j][i]);
@@ -38,7 +38,7 @@ Matrix::Matrix(vector<vector<float> > v, bool isColPrior)
     }
 }
 
-Matrix::Matrix(vector<float> v)
+Matrix::Matrix(vector<double> v)
 {
     assert(v.size() > 0);
     colVecArray.emplace_back(v);
@@ -46,14 +46,14 @@ Matrix::Matrix(vector<float> v)
     nRow = v.size();
 }
 
-Matrix::Matrix(int nRow, int nCol, float num)
+Matrix::Matrix(int nRow, int nCol, double num)
 {
     assert(nRow > 0);
     assert(nCol > 0);
     vector<Vec> mat;
     for(int i = 0; i < nCol; i++)
     {
-        mat.emplace_back(vector<float>(nRow, num));
+        mat.emplace_back(vector<double>(nRow, num));
     }
     colVecArray = mat;
     this->nRow = nRow;
@@ -71,7 +71,7 @@ vector<int> Matrix::shape() {
 }
 
 Matrix Matrix::transpose() {
-    vector<vector<float>> mat(nCol);
+    vector<vector<double>> mat(nCol);
     for(int i = 0; i < nRow; i++)
     {
         for(int j = 0; j < nCol; j++)
@@ -82,7 +82,7 @@ Matrix Matrix::transpose() {
     return Matrix(mat);
 }
 
-Matrix Matrix::setNum(float num)
+Matrix Matrix::setNum(double num)
 {
     for(int i = 0; i < nRow; i++)
     {
@@ -111,7 +111,7 @@ Vec& Matrix::operator[](const int idx) {
     return colVecArray[idx];
 }
 
-float& Matrix::operator[](const pair<int, int> idx)
+double& Matrix::operator[](const pair<int, int> idx)
 {
     assert(idx.second >= 0 && idx.second < nCol && idx.first >= 0 && idx.first < nRow);
     return colVecArray[idx.second][idx.first];
@@ -131,7 +131,7 @@ Matrix Matrix::operator*(Matrix &b) {
     return m;
 }
 
-Matrix Matrix::operator*(float a) {
+Matrix Matrix::operator*(double a) {
     Matrix m = Matrix(this->nRow, this->nCol).setZero();
     for(int i = 0; i < m.nRow; i++)
     {
@@ -143,7 +143,7 @@ Matrix Matrix::operator*(float a) {
     return m;
 }
 
-Matrix Matrix::operator+(float a) {
+Matrix Matrix::operator+(double a) {
     Matrix m = Matrix(this->nRow, this->nCol).setZero();
     for(int i = 0; i < m.nRow; i++)
     {
@@ -155,7 +155,7 @@ Matrix Matrix::operator+(float a) {
     return m;
 }
 
-Matrix Matrix::operator*=(float a)
+Matrix Matrix::operator*=(double a)
 {
     for(int i = 0; i < this->nRow; i ++)
     {
@@ -167,7 +167,7 @@ Matrix Matrix::operator*=(float a)
     return (*this);
 }
 
-Matrix Matrix::setTripleDiag(float lambda, float lambdaUp, float lambdaDown)
+Matrix Matrix::setTripleDiag(double lambda, double lambdaUp, double lambdaDown)
 {
     assert(this->nRow == this->nCol);
     this->setZero();
@@ -212,6 +212,15 @@ ostream& NLA::operator<<(ostream &os, Matrix a) {
     }
     os << "]" << endl;
     return os;
+}
+
+Matrix Matrix::swapRow(int idx1, int idx2) {
+    assert(idx1 >=0 && idx1 < nRow && idx2>=0 && idx2< nRow);
+    for(int i =0; i < nCol; i++)
+    {
+        (*this)[i].swap(idx1, idx2);
+    }
+    return (*this);
 }
 
 

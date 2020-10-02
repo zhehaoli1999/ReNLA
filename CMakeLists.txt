@@ -3,4 +3,4 @@ project(Codes)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Codes main.cpp Matrix.cpp Matrix.h LinearSolver.cpp LinearSolver.h Vec.cpp Vec.h)
+add_executable(Codes src/main.cpp src/Matrix.cpp include/Matrix.h src/LinearSolver.cpp include/LinearSolver.h src/Vec.cpp include/Vec.h src/chap1.cpp src/Timer.cpp include/Timer.h)

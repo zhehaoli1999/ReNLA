@@ -14,13 +14,12 @@ namespace NLA {
         LinearSolver(Matrix& A, Vec&b);
 
         static Matrix LUdecompose(Matrix& m);
-        static Matrix LUdecomposeColPivot(Matrix& m, Matrix& P);
+        static Matrix LUdecomposeColPivot(Matrix& m, vector<pair<int, int>>& P);
 
-        Vec lowTriangleSolve();
+        Vec lowTriangleSolve(bool isDiagAllOne = false);
         Vec upTriangleSolve();
 
         Vec gaussSolve(bool isColPivot = true);
-
 
     private:
         Matrix A;
