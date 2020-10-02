@@ -12,20 +12,28 @@ namespace NLA {
     class Vec {
     public:
         Vec(vector<float>);
+        Vec(int n);
+
+        int size();
 
         float& operator[](const int idx);
-        Vec operator[](const pair<int, int>);
+        Vec operator[](const pair<int, int>); // Vec slice
+
+        Vec setSlice(int begin, int end, Vec v);
+        Vec getSlice(int begin, int end);
+        Vec addToSlice(int begin, int end, Vec v);
 
         friend ostream& operator<< (ostream& os, Vec);
+        Vec operator+(Vec& b);
+        Vec operator-(Vec& b);
+        Vec operator*(float b);
+        Vec operator/(float b);
 
         float norm2();
         float norm1();
         float dist(Vec& b);
         Vec normalize();
         float dot(Vec& b);
-
-        Vec operator+(Vec& b);
-        Vec operator-(Vec& b);
 
     private:
         vector<float> data;

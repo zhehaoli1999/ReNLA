@@ -6,13 +6,14 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
-
+#include "Vec.h"
 using namespace std;
 
 namespace NLA {
     class Matrix {
     public:
-        Matrix(vector<vector<float>>);
+        Matrix(vector<vector<float>> v, bool isColPrior=false);
+        Matrix(vector<Vec>);
         Matrix(vector<float>);
         Matrix(int nRow, int nCol, float num);
         Matrix(int nRow, int nCol); // Create a zero matrix
@@ -23,7 +24,15 @@ namespace NLA {
         Matrix setZero();
         Matrix setTripleDiag(float lambda, float lambdaUp, float lambdaDown);
 
-        vector<float>& operator[](const int idx);
+        // get entry of Matrix[col][row]
+        Vec& operator[](const int idx);
+
+        // get entry of Matrix[{row, col}]
+        float& operator[](const pair<int, int>);
+
+        Matrix operator[](const pair<pair<int, int>, pair<int, int>>);
+        Matrix setSlice(pair<pair<int, int>, pair<int, int>>, Matrix&);
+        Matrix getSlice(pair<pair<int, int>, pair<int, int>>);
 
         Matrix operator+(Matrix &);
         Matrix operator+=(Matrix &);
@@ -42,7 +51,7 @@ namespace NLA {
         friend ostream& operator<<(ostream& os, Matrix a);
 
     protected:
-        vector<vector<float>> data;
+        vector<Vec> colVecArray;
         int nRow, nCol;
     };
 
