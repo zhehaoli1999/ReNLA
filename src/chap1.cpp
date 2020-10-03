@@ -9,7 +9,7 @@
 #include <string>
 
 using namespace std;
-using namespace NLA;
+using namespace ReNLA;
 
 void solve(Matrix& A, Vec& b, string c)
 {

@@ -10,7 +10,7 @@ using namespace std;
 
 constexpr double eps = 1e-8;
 
-namespace NLA {
+namespace ReNLA {
     class Vec {
     public:
         Vec(vector<double>);

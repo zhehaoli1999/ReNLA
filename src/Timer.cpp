@@ -3,7 +3,7 @@
 //
 #include "../include/Timer.h"
 
-using namespace NLA;
+using namespace ReNLA;
 
 Timer::Timer(const char *name) {this->name = name;}
 

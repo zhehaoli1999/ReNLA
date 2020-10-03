@@ -7,7 +7,7 @@
 #include <ctime>
 #include <cstdio>
 
-namespace NLA {
+namespace ReNLA {
     class Timer {
     public:
         Timer(const char *name);

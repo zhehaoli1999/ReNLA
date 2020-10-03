@@ -3,7 +3,7 @@
 //
 #include "../include/Matrix.h"
 
-using namespace NLA;
+using namespace ReNLA;
 
 
 Matrix::Matrix(vector<Vec> v) : colVecArray(v)
@@ -255,7 +255,7 @@ Matrix Matrix::operator+(Matrix &b)
     return m;
 }
 
-ostream& NLA::operator<<(ostream &os, Matrix a) {
+ostream& ReNLA::operator<<(ostream &os, Matrix a) {
     os << "[";
     for(int i = 0; i < a.nRow; i++)
     {

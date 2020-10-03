@@ -8,7 +8,7 @@
 #include "Matrix.h"
 #include "Vec.h"
 
-namespace NLA {
+namespace ReNLA {
     class LinearSolver {
     public:
         LinearSolver(Matrix& A, Vec&b);

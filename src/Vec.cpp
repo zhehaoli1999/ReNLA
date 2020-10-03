@@ -6,7 +6,7 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
-using namespace NLA;
+using namespace ReNLA;
 
 Vec::Vec(vector<double>v) : data{std::move(v)}
 {}
@@ -95,7 +95,7 @@ Vec Vec::mulToSlice(int begin, int end, double a) {
     return (*this)[{begin, end}];
 }
 
-ostream& NLA::operator<<(ostream& os, Vec x)
+ostream& ReNLA::operator<<(ostream& os, Vec x)
 {
     os << "[";
     for(int i = 0; i < x.data.size(); i++)

@@ -5,7 +5,7 @@
 #include "../include/LinearSolver.h"
 #include <cmath>
 
-using namespace NLA;
+using namespace ReNLA;
 
 LinearSolver::LinearSolver(Matrix &A, Vec &b) : A{A}, b{b}
 {

@@ -5,7 +5,7 @@
 #include "../include/LinearSolver.h"
 #include "../include/Timer.h"
 using namespace std;
-using namespace NLA;
+using namespace ReNLA;
 
 void MatrixTest()
 {

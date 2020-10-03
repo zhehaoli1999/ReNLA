@@ -9,7 +9,7 @@
 #include "Vec.h"
 using namespace std;
 
-namespace NLA {
+namespace ReNLA {
     class Matrix {
     public:
         Matrix(vector<vector<double>> v, bool isColPrior=false);
