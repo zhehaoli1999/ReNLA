@@ -3,6 +3,7 @@
 #include "../include/Matrix.h"
 #include "../include/Vec.h"
 #include "../include/LinearSolver.h"
+#include "../include/Timer.h"
 using namespace std;
 using namespace NLA;
 
@@ -24,9 +25,14 @@ void MatrixTest()
     cout << "=======b * 100========"<< endl;
     cout << b * 100.0;
     cout << "======= construct ========"<< endl;
-    Matrix g({{1,2,3},{4,5,6}});
+    Matrix g({{1,2,3,4,5},{6,7,8,9,0},{1,2,3,4,5}});
     cout << g;
     cout << g.transpose();
+    cout << "======= slice ========"<< endl;
+    auto u = g.transpose();
+    cout << g.transpose()[{{0,3},1}];
+    cout << g.transpose()[{1, {0,2}}];
+    cout << g.transpose()[{{1,4}, {1,3}}];
 }
 
 void VecTest()
@@ -48,6 +54,8 @@ void VecTest()
     cout << x.minIdx(0,3);
     cout << "======= swap ========"<< endl;
     cout << x.swap(0,1);
+    cout << "======= dot ========"<< endl;
+    cout << Vec({1,2,3}).dot(Vec({5,6,7}));
 }
 
 void SolveTest()
@@ -79,16 +87,40 @@ void gaussTest()
     cout << "======= b ========"<< endl;
     cout << b;
     cout << "======= gauss solver result ========"<< endl;
-    cout << LinearSolver(A,b).gaussSolve(false);
+    cout << LinearSolver(A,b).LUgaussSolve(false);
     cout << "======= gauss solver result with column pivot ========"<< endl;
-    cout << LinearSolver(A,b).gaussSolve();
+    cout << LinearSolver(A,b).LUgaussSolve();
+}
+
+void LUgaussPerf()
+{
+    const int n = 1000;
+    Matrix A = Matrix(n, n).setTripleDiag(10.0, 1.0, 1.0);
+    Vec b(vector<double>(n, 12.0));
+    b[0] = 11.0;
+    b[n - 1] = 11.0;
+
+    auto S = LinearSolver(A, b);
+
+    Timer t1("basic gauss solve");
+    t1.start();
+    auto x1 = S.LUgaussSolve(false);
+    t1.end();
+    cout << x1;
+
+    Timer t2("col pivot gauss solve");
+    t2.start();
+    auto x2 = S.LUgaussSolve(true);
+    t2.end();
+    cout << x2;
 }
 
 //int main() {
-//    //MatrixTest();
+//    MatrixTest();
 //    //VecTest();
 //    //SolveTest();
 //    //LUtest();
 //    //gaussTest();
+//    //LUgaussPerf();
 //    return 0;
 //}

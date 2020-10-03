@@ -15,11 +15,13 @@ namespace NLA {
 
         static Matrix LUdecompose(Matrix& m);
         static Matrix LUdecomposeColPivot(Matrix& m, vector<pair<int, int>>& P);
+        static Matrix CholeskyDecompose(Matrix& m, bool isImproved = true);
 
         Vec lowTriangleSolve(bool isDiagAllOne = false);
         Vec upTriangleSolve();
 
-        Vec gaussSolve(bool isColPivot = true);
+        Vec LUgaussSolve(bool isColPivot = true);
+        Vec CholeskeyGaussSolve(bool isImproved = true);
 
     private:
         Matrix A;

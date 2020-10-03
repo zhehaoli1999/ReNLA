@@ -27,6 +27,7 @@ namespace NLA {
         Matrix setIdentity();
         Matrix setZero();
         Matrix setTripleDiag(double lambda, double lambdaUp, double lambdaDown);
+        Matrix setHilbert();
 
         // get entry of Matrix[col][row]
         Vec& operator[](const int idx);
@@ -34,7 +35,14 @@ namespace NLA {
         // get entry of Matrix[{row, col}]
         double& operator[](const pair<int, int>);
 
+        // slice row vector
+        Vec operator[](const pair<int, pair<int, int>>);
+        // slice col vector
+        Vec operator[](const pair<pair<int, int>, int>);
+
+        // slice sub matrix
         Matrix operator[](const pair<pair<int, int>, pair<int, int>>);
+
         Matrix setSlice(pair<pair<int, int>, pair<int, int>>, Matrix&);
         Matrix getSlice(pair<pair<int, int>, pair<int, int>>);
 
@@ -51,6 +59,8 @@ namespace NLA {
 
         // Matrix multiplication
         Matrix operator*(Matrix& b);
+        Vec operator*(Vec& b);
+        Vec operator*(Vec b);
         Matrix elementwiseMul(Matrix &b);
         friend ostream& operator<<(ostream& os, Matrix a);
 

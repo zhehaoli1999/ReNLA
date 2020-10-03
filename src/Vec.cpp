@@ -5,14 +5,46 @@
 #include "../include/Vec.h"
 #include <cmath>
 #include <algorithm>
+#include <utility>
 using namespace NLA;
 
-Vec::Vec(vector<double>v) : data{v}
+Vec::Vec(vector<double>v) : data{std::move(v)}
 {}
 
 Vec::Vec(int n)
 {
     data = vector<double>(n, 0.0);
+}
+
+Vec::Vec(int n, double num)
+{
+    data = vector<double>(n, num);
+}
+
+Vec Vec::setOneHot(int idx) {
+    assert(idx >=0 && idx < (*this).size());
+    for(int i = 0; i < (*this).size(); i++)
+    {
+        if(i == idx) (*this)[i] = 1.0;
+        else (*this)[i] = 0.0;
+    }
+    return (*this);
+}
+
+Vec Vec::setOne() {
+    for(int i = 0; i < (*this).size(); i++)
+    {
+        (*this)[i] = 1.0;
+    }
+    return (*this);
+}
+
+Vec Vec::setIncremental()  {
+    for(int i = 0; i < (*this).size(); i++)
+    {
+        (*this)[i] = i * 1.0;
+    }
+    return (*this);
 }
 
 int Vec::size()
@@ -138,7 +170,7 @@ Vec Vec::operator*(double b)
 
 Vec Vec::operator/(double b)
 {
-    assert(fabs(b - 0.0) > 1e-6);
+    assert(fabs(b - 0.0) > eps);
     vector<double> v(this->data.size());
     for(int i =0; i < v.size(); i++)
     {
@@ -182,4 +214,27 @@ Vec Vec::swap(int idx1, int idx2)
     (*this)[idx1] = (*this)[idx2];
     (*this)[idx2] = temp;
     return (*this);
+}
+
+double Vec::dot(Vec b)
+{
+    assert((*this).size() == b.size());
+    double dot = 0.0;
+    for(int i = 0; i < b.size(); i++)
+    {
+        dot += (*this)[i] * b[i];
+    }
+    return dot;
+}
+
+double Vec::dist2(Vec &b) {
+    return (*this - b).dot(*this - b);
+}
+
+double Vec::dist2(Vec &a, Vec &b) {
+    return a.dist2(b);
+}
+
+double Vec::length() {
+    return sqrt(dist2(*this, *this));
 }

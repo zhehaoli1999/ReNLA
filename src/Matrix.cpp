@@ -5,17 +5,18 @@
 
 using namespace NLA;
 
+
 Matrix::Matrix(vector<Vec> v) : colVecArray(v)
 {
-    assert(v.size() > 0);
+    assert(!v.empty());
     nCol = v.size();
     nRow = v[0].size();
 }
 
 Matrix::Matrix(vector<vector<double> > v, bool isColPrior)
 {
-    assert(v.size() > 0);
-    assert(v[0].size() > 0);
+    assert(!v.empty());
+    assert(!v[0].empty());
     if(isColPrior) {
         nCol = v.size();
         nRow = v[0].size();
@@ -40,7 +41,7 @@ Matrix::Matrix(vector<vector<double> > v, bool isColPrior)
 
 Matrix::Matrix(vector<double> v)
 {
-    assert(v.size() > 0);
+    assert(!v.empty());
     colVecArray.emplace_back(v);
     nCol = 1;
     nRow = v.size();
@@ -117,6 +118,41 @@ double& Matrix::operator[](const pair<int, int> idx)
     return colVecArray[idx.second][idx.first];
 }
 
+Vec Matrix::operator[](const pair<int, pair<int, int>> idx) {
+    int rowIdx = idx.first;
+    auto colSlice = idx.second;
+    assert(colSlice.second >= colSlice.first && colSlice.first >=0 && colSlice.second <= nCol);
+    vector<double> v;
+    for(int i = colSlice.first; i < colSlice.second; i++)
+    {
+        v.push_back((*this)[{rowIdx, i}]);
+    }
+    return Vec(v);
+}
+
+Vec Matrix::operator[](const pair<pair<int, int>, int> idx) {
+    int colIdx = idx.second;
+    auto rowSlice =idx.first;
+    return (*this)[colIdx][{rowSlice.first, rowSlice.second}];
+}
+
+Matrix Matrix::operator[](const pair<pair<int, int>, pair<int, int> > slice) {
+    auto rowSlice = slice.first;
+    auto colSlice = slice.second;
+    assert(colSlice.second >= colSlice.first && colSlice.first >=0 && colSlice.second <= nCol);
+    vector<Vec> m;
+    for(int i = colSlice.first; i < colSlice.second; i++)
+    {
+        m.push_back( (*this)[i][{rowSlice.first, rowSlice.second}]);
+    }
+    return Matrix(m);
+}
+
+Matrix Matrix::getSlice(pair<pair<int, int>, pair<int, int>> slice)
+{
+    return (*this)[slice];
+}
+
 Matrix Matrix::operator*(Matrix &b) {
     assert(this->nCol == b.nRow);
     Matrix m = Matrix(this->nRow, b.nCol).setZero();
@@ -141,6 +177,28 @@ Matrix Matrix::operator*(double a) {
         }
     }
     return m;
+}
+
+Vec Matrix::operator*(Vec &b){
+    assert(nCol == b.size());
+    Vec v(nRow);
+    for(int i = 0; i < nRow; i++){
+        for(int j = 0; j < nCol; j++) {
+            v[i] += (*this)[{i, j}] * b[j];
+        }
+    }
+    return v;
+}
+
+Vec Matrix::operator*(Vec b) { // TODO remove duplicate and support reference and non-reference ?
+    assert(nCol == b.size());
+    Vec v(nRow);
+    for(int i = 0; i < nRow; i++){
+        for(int j = 0; j < nCol; j++) {
+            v[i] += (*this)[{i, j}] * b[j];
+        }
+    }
+    return v;
 }
 
 Matrix Matrix::operator+(double a) {
@@ -178,6 +236,17 @@ Matrix Matrix::setTripleDiag(double lambda, double lambdaUp, double lambdaDown)
             (*this)[{i,i-1}] = lambdaDown;
         if(i <= nRow-2)
             (*this)[{i,i+1}] = lambdaUp;
+    }
+    return (*this);
+}
+
+Matrix Matrix::setHilbert() {
+    for(int i = 0; i < nRow; i++)
+    {
+        for(int j = 0; j < nCol; j++)
+        {
+            (*this)[{i,j}] = 1.0 / ((i+1) + (j+1) - 1);
+        }
     }
     return (*this);
 }
@@ -222,7 +291,6 @@ Matrix Matrix::swapRow(int idx1, int idx2) {
     }
     return (*this);
 }
-
 
 
 

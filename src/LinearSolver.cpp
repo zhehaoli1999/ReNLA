@@ -19,13 +19,13 @@ Vec LinearSolver::lowTriangleSolve(bool isDiagAllOne) {
     int n = b.size();
     for(int j = 0; j < n; j++) {
         if(!isDiagAllOne) {
-            assert(fabs(A[{j,j}] -0.0) > 1e-6);
+            assert(fabs(A[{j,j}] -0.0) > eps);
             x[j] = x[j] / A[{j, j}];
         }
         x.addToSlice(j+1, n, -A[j][{j+1, n}] * x[j]);
     }
     if(!isDiagAllOne) {
-        assert(fabs(A[{n-1, n-1}] - 0.0) > 1e-6);
+        assert(fabs(A[{n-1, n-1}] - 0.0) > eps);
         x[n - 1] /= A[{n - 1, n - 1}];
     }return x;
 }
@@ -35,11 +35,11 @@ Vec LinearSolver::upTriangleSolve() {
     int n = b.size();
     for(int j = n-1; j>=1; j--)
     {
-        assert(fabs(A[{j,j}] -0.0) > 1e-6);
+        assert(fabs(A[{j,j}] -0.0) > eps);
         x[j] = x[j] / A[{j,j}];
         x.addToSlice(0, j, - A[j][{0, j}] * x[j]);
     }
-    assert(fabs(A[{0,0}] -0.0) > 1e-6);
+    assert(fabs(A[{0,0}] -0.0) > eps);
     x[0] /= A[{0,0}];
     return x;
 }
@@ -51,7 +51,7 @@ Matrix LinearSolver::LUdecompose(Matrix& m) {
     // without column pivot selecting
     for(int k = 0; k < n; k++)
     {
-          assert(fabs(A[{k,k}] - 0.0) > 1e-6);
+          assert(fabs(A[{k,k}] - 0.0) > eps);
           A[k].mulToSlice(k+1, n, 1.0 / A[{k,k}]);
           for(int j = k+1; j < n; j++)
           {
@@ -74,7 +74,7 @@ Matrix LinearSolver::LUdecomposeColPivot(Matrix &m, vector<pair<int, int>> &P) {
            A.swapRow(maxIdx, k);
            P.emplace_back(maxIdx, k);
         }
-        if(fabs(A[{k,k}] - 0.0) >= 1e-6)
+        if(fabs(A[{k,k}] - 0.0) >= eps)
         {
             A[k].mulToSlice(k+1, n, 1.0 / A[{k,k}]);
             for(int j = k+1; j < n; j++)
@@ -91,7 +91,7 @@ Matrix LinearSolver::LUdecomposeColPivot(Matrix &m, vector<pair<int, int>> &P) {
     return A;
 }
 
-Vec LinearSolver::gaussSolve(bool isColPivot) {
+Vec LinearSolver::LUgaussSolve(bool isColPivot) {
     if(!isColPivot)
     {
         Matrix M = LUdecompose(this->A);
@@ -111,4 +111,44 @@ Vec LinearSolver::gaussSolve(bool isColPivot) {
         Vec x = LinearSolver(M, y).upTriangleSolve();
         return x;
     }
+}
+
+Matrix LinearSolver::CholeskyDecompose(Matrix &m, bool isImproved) {
+    Matrix A = m;
+    assert(A.shape()[0] == A.shape()[1]); // TODO: should check A is positive definite
+    int n = A.shape()[0];
+    if(!isImproved) {
+        for (int k = 0; k < n; k++) {
+            A[{k, k}] = sqrt(A[{k, k}]);
+            A[k].mulToSlice(k + 1, n, 1.0 / A[{k, k}]);
+            for (int j = k + 1; j < n; j++) {
+                A[j].addToSlice(j, n, -A[k][{j, n}] * A[{j, k}]);
+            }
+        }
+    } else{
+        Vec v(n);
+        for(int j = 0; j < n; j++)
+        {
+            for(int i = 0; i <= j-1; i++)
+            {
+                v[i] = A[{j, i}] * A[{i, i}];
+            }
+            A[{j,j}] -= A[{j, {0, j}}].dot(v[{0, j}]);
+            // The below for loop can be replaced by Matrix * Vec.
+            for(int k = 0; k < j; k++)
+            {
+                A[j].addToSlice(j+1, n, - A[{ {j+1, n}, k}] * v[k]);
+            }
+            A[j].mulToSlice(j+1, n, 1.0 / A[{j,j}]);
+        }
+    }
+    return A;
+}
+
+Vec LinearSolver::CholeskeyGaussSolve(bool isImproved) {
+    Matrix M = CholeskyDecompose(A, isImproved);
+    // If isImproved, should set isDiagAllOne to be true when doing lowTriangleSolve.
+    Vec y = LinearSolver(M, b).lowTriangleSolve(isImproved);
+    Vec x = LinearSolver(M, y).upTriangleSolve();
+    return x;
 }

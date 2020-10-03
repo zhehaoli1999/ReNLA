@@ -8,11 +8,18 @@
 
 using namespace std;
 
+constexpr double eps = 1e-8;
+
 namespace NLA {
     class Vec {
     public:
         Vec(vector<double>);
         Vec(int n);
+        Vec(int n, double num);
+
+        Vec setOneHot(int idx);
+        Vec setIncremental();
+        Vec setOne();
 
         int size();
 
@@ -37,9 +44,11 @@ namespace NLA {
 
         double norm2();
         double norm1();
-        double dist(Vec& b);
+        double dist2(Vec& b);
+        static double dist2(Vec& a, Vec& b);
+        double length();
         Vec normalize();
-        double dot(Vec& b);
+        double dot(Vec b);
 
         int maxAbsIdx(int begin, int end);
         int maxIdx(int begin, int end);
