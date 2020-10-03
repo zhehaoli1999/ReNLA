@@ -59,7 +59,6 @@ namespace NLA {
 
         // Matrix multiplication
         Matrix operator*(Matrix& b);
-        Vec operator*(Vec& b);
         Vec operator*(Vec b);
         Matrix elementwiseMul(Matrix &b);
         friend ostream& operator<<(ostream& os, Matrix a);

@@ -49,6 +49,10 @@ void VecTest()
     x.addToSlice(1,3, -x[{0,2}]);
     cout << x;
     cout << -x;
+    cout << "======= mul to slice ========"<< endl;
+    x.mulToSlice(1,3, 3);
+    cout << x;
+    cout << -x;
     cout << "======= max & min ========"<< endl;
     cout << x.maxIdx(0, 3);
     cout << x.minIdx(0,3);
@@ -117,7 +121,7 @@ void LUgaussPerf()
 
 //int main() {
 //    MatrixTest();
-//    //VecTest();
+//    VecTest();
 //    //SolveTest();
 //    //LUtest();
 //    //gaussTest();

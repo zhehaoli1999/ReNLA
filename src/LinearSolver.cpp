@@ -68,7 +68,7 @@ Matrix LinearSolver::LUdecomposeColPivot(Matrix &m, vector<pair<int, int>> &P) {
     P.clear();
     for(int k =0; k < n; k++)
     {
-        auto maxIdx = A[k].maxAbsIdx(k, n); // Note: only select absmax in [k, n] rows
+        auto maxIdx = A[k].maxAbsIdx(k, n); // Note: only select absmax in [k, n-1] rows
         if( maxIdx != k)
         {
            A.swapRow(maxIdx, k);
@@ -103,9 +103,9 @@ Vec LinearSolver::LUgaussSolve(bool isColPivot) {
     {
         vector<pair<int, int>> P;
         Matrix M = LUdecomposeColPivot(this->A, P);
-        for(int i = 0; i < P.size(); i++)
+        for(auto & i : P)
         {
-            b.swap(P[i].first, P[i].second);
+            b.swap(i.first, i.second);
         }
         Vec y = LinearSolver(M, b).lowTriangleSolve(true);
         Vec x = LinearSolver(M, y).upTriangleSolve();
@@ -125,6 +125,7 @@ Matrix LinearSolver::CholeskyDecompose(Matrix &m, bool isImproved) {
                 A[j].addToSlice(j, n, -A[k][{j, n}] * A[{j, k}]);
             }
         }
+        // Store L in the low triangle part of A
     } else{
         Vec v(n);
         for(int j = 0; j < n; j++)
@@ -135,20 +136,42 @@ Matrix LinearSolver::CholeskyDecompose(Matrix &m, bool isImproved) {
             }
             A[{j,j}] -= A[{j, {0, j}}].dot(v[{0, j}]);
             // The below for loop can be replaced by Matrix * Vec.
-            for(int k = 0; k < j; k++)
+            for(int k = 0; k <= j-1; k++)
             {
                 A[j].addToSlice(j+1, n, - A[{ {j+1, n}, k}] * v[k]);
             }
             A[j].mulToSlice(j+1, n, 1.0 / A[{j,j}]);
         }
+        // Store L in the low triangle part of A and D on the diag of A
     }
     return A;
 }
 
 Vec LinearSolver::CholeskeyGaussSolve(bool isImproved) {
     Matrix M = CholeskyDecompose(A, isImproved);
-    // If isImproved, should set isDiagAllOne to be true when doing lowTriangleSolve.
-    Vec y = LinearSolver(M, b).lowTriangleSolve(isImproved);
-    Vec x = LinearSolver(M, y).upTriangleSolve();
-    return x;
+    if(!isImproved) {
+        // If isImproved, should set isDiagAllOne to be true when doing lowTriangleSolve.
+        Vec y = LinearSolver(M, b).lowTriangleSolve(false);
+        Matrix Mt = M.transpose();
+        Vec x = LinearSolver(Mt, y).upTriangleSolve();
+        return x;
+    } else
+    {
+        Vec y = LinearSolver(M, b).lowTriangleSolve(true);
+        Matrix Mt = M.transpose();
+// Below is not recommended:
+//        for(int i = 0; i < y.size(); i++)
+//        {
+//            y[i] /= Mt[{i,i}];
+//        }
+        for(int i = 0; i < Mt.shape()[0]; i++)
+        {
+            for(int j = i+1; j < Mt.shape()[1]; j++)
+            {
+                Mt[{i, j}] *= Mt[{i,i}];
+            }
+        }
+        Vec x = LinearSolver(Mt, y).upTriangleSolve();
+        return x;
+    }
 }

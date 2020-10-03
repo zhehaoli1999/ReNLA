@@ -6,70 +6,77 @@
 #include "../include/Vec.h"
 #include "../include/Timer.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 using namespace NLA;
 
+void solve(Matrix& A, Vec& b, string c)
+{
+    Timer t(c.c_str());
+    auto S = LinearSolver(A, b);
+    Vec x(0);
+    t.start();
+    if(c == "basic gauss solve")
+        x = S.LUgaussSolve(false);
+    else if(c == "column pivot gauss solve")
+        x = S.LUgaussSolve(true);
+    else if(c == "Choleskey gauss solve with sqrt used")
+        x = S.CholeskeyGaussSolve(false);
+    else if(c == "Improved Choleskey gauss solve")
+        x = S.CholeskeyGaussSolve(true);
+    t.end();
+    cout << x;
+    cout << "@error: " << (A * x).dist2(b) << endl;
+}
+
 void homework1_1()
 {
-    const int n = 40;
+    cout << " ========= HW 1.1 ==========" << endl;
+    const int n = 30;
     Matrix A = Matrix(n, n).setTripleDiag(6.0, 1.0, 8.0);
     Vec b(vector<double>(n, 15.0));
     b[0] = 7.0; b[n-1] = 14.0;
-    auto S = LinearSolver(A, b);
 
-    Timer t1("basic gauss solve");
-    t1.start();
-    auto x1 = S.LUgaussSolve(false);
-    t1.end();
-    cout << x1;
+    solve(A, b, "basic gauss solve");
+    solve(A, b, "column pivot gauss solve");
 
-    Timer t2("column pivot gauss solve");
-    t2.start();
-    auto x2 = S.LUgaussSolve(true);
-    t2.end();
-    cout << x2;
+    cout <<  endl;
+
 }
 
-void homework1_2() {
-    const int n = 100;
-    Matrix A1 = Matrix(n, n).setTripleDiag(10.0, 1.0, 1.0);
-    Vec b = Vec(n, 12);
-    b[0] = b[n-1] = 11;
-    //Vec b = Vec(n).setIncremental();
+void homework1_2(Matrix& A1, Vec& b, Matrix& A2, Vec& b2) {
+    cout << " ========= HW 1.2 ==========" << endl;
+    solve(A1, b, "Choleskey gauss solve with sqrt used");
+    solve(A1, b, "Improved Choleskey gauss solve");
 
-    auto S1 = LinearSolver(A1, b);
+    solve(A2, b2, "Choleskey gauss solve with sqrt used");
+    solve(A2, b2, "Improved Choleskey gauss solve");
 
-    Timer t1("Choleskey gauss solve with sqrt used");
-    t1.start();
-    auto x11 = S1.CholeskeyGaussSolve(false);
-    t1.end();
-    cout << x11;
-
-    Timer t2("Improved Choleskey gauss solve");
-    t2.start();
-    auto x12 = S1.CholeskeyGaussSolve(true);
-    t2.end();
-    cout << x12 << endl;
-
-    const int n2 = 5;
-    Matrix A2 = Matrix(n2).setHilbert();
-    Vec b2 = A2 * Vec(n2).setOne();
-    auto S2 = LinearSolver(A2, b2);
-
-    t1.start();
-    auto x21 = S2.CholeskeyGaussSolve(false);
-    t1.end();
-    cout << x21;
-
-    t2.start();
-    auto x22 = S2.CholeskeyGaussSolve(true);
-    t2.end();
-    cout << x22;
+    cout << endl;
 }
 
+void homework1_3(Matrix& A1, Vec& b, Matrix& A2, Vec& b2) {
+    cout << " ========= HW 1.3 ==========" << endl;
+    solve(A1, b, "basic gauss solve");
+    solve(A1, b, "column pivot gauss solve");
+
+    solve(A2, b2, "basic gauss solve");
+    solve(A2, b2, "column pivot gauss solve");
+    cout << endl;
+}
 int main()
 {
-    //homework1_1();
-    homework1_2();
+    homework1_1();
+
+    const int n = 100;
+    Matrix A1 = Matrix(n, n).setTripleDiag(10.0, 1.0, 1.0);
+    Vec b = Vec(n).setIncremental();
+
+    const int n2 = 7;
+    Matrix A2 = Matrix(n2).setHilbert();
+    Vec b2 = A2 * Vec(n2).setOne();
+    homework1_2(A1, b,A2,b2);
+
+    homework1_3(A1, b, A2, b2);
 }

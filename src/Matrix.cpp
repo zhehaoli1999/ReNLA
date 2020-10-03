@@ -179,18 +179,7 @@ Matrix Matrix::operator*(double a) {
     return m;
 }
 
-Vec Matrix::operator*(Vec &b){
-    assert(nCol == b.size());
-    Vec v(nRow);
-    for(int i = 0; i < nRow; i++){
-        for(int j = 0; j < nCol; j++) {
-            v[i] += (*this)[{i, j}] * b[j];
-        }
-    }
-    return v;
-}
-
-Vec Matrix::operator*(Vec b) { // TODO remove duplicate and support reference and non-reference ?
+Vec Matrix::operator*(Vec b) {
     assert(nCol == b.size());
     Vec v(nRow);
     for(int i = 0; i < nRow; i++){
