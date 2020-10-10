@@ -17,7 +17,7 @@ LinearSolver::LinearSolver(Matrix &A, Vec &b) : A{A}, b{b}
 Vec LinearSolver::lowTriangleSolve(bool isDiagAllOne) {
     Vec x = b;
     int n = b.size();
-    for(int j = 0; j < n; j++) {
+    for(int j = 0; j < n-1; j++) {
         if(!isDiagAllOne) {
             assert(fabs(A[{j,j}] -0.0) > eps);
             x[j] = x[j] / A[{j, j}];
@@ -49,7 +49,7 @@ Matrix LinearSolver::LUdecompose(Matrix& m) {
     assert(A.shape()[0] == A.shape()[1]);
     int n = A.shape()[0];
     // without column pivot selecting
-    for(int k = 0; k < n; k++)
+    for(int k = 0; k < n-1; k++)
     {
           assert(fabs(A[{k,k}] - 0.0) > eps);
           A[k].mulToSlice(k+1, n, 1.0 / A[{k,k}]);
@@ -66,7 +66,7 @@ Matrix LinearSolver::LUdecomposeColPivot(Matrix &m, vector<pair<int, int>> &P) {
     assert(A.shape()[0] == A.shape()[1]);
     int n = A.shape()[0];
     P.clear();
-    for(int k =0; k < n; k++)
+    for(int k =0; k < n-1; k++)
     {
         auto maxIdx = A[k].maxAbsIdx(k, n); // Note: only select absmax in [k, n-1] rows
         if( maxIdx != k)
@@ -74,7 +74,7 @@ Matrix LinearSolver::LUdecomposeColPivot(Matrix &m, vector<pair<int, int>> &P) {
            A.swapRow(maxIdx, k);
            P.emplace_back(maxIdx, k);
         }
-        if(fabs(A[{k,k}] - 0.0) >= eps)
+        if(fabs(A[{k,k}] - 0.0) > eps)
         {
             A[k].mulToSlice(k+1, n, 1.0 / A[{k,k}]);
             for(int j = k+1; j < n; j++)
@@ -119,7 +119,7 @@ Matrix LinearSolver::CholeskyDecompose(Matrix &m, bool isImproved) {
     int n = A.shape()[0];
     if(!isImproved) {
         for (int k = 0; k < n; k++) {
-            A[{k, k}] = sqrt(A[{k, k}]);
+            A[{k, k}] = sqrtl(A[{k, k}]);
             A[k].mulToSlice(k + 1, n, 1.0 / A[{k, k}]);
             for (int j = k + 1; j < n; j++) {
                 A[j].addToSlice(j, n, -A[k][{j, n}] * A[{j, k}]);
@@ -144,6 +144,7 @@ Matrix LinearSolver::CholeskyDecompose(Matrix &m, bool isImproved) {
         }
         // Store L in the low triangle part of A and D on the diag of A
     }
+    //cout << A;
     return A;
 }
 

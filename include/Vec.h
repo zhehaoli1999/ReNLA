@@ -8,7 +8,7 @@
 
 using namespace std;
 
-constexpr double eps = 1e-8;
+constexpr double eps = 1e-40;
 
 namespace ReNLA {
     class Vec {

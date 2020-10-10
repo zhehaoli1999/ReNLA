@@ -274,9 +274,10 @@ ostream& ReNLA::operator<<(ostream &os, Matrix a) {
 
 Matrix Matrix::swapRow(int idx1, int idx2) {
     assert(idx1 >=0 && idx1 < nRow && idx2>=0 && idx2< nRow);
-    for(int i =0; i < nCol; i++)
-    {
-        (*this)[i].swap(idx1, idx2);
+    if(idx1 != idx2) {
+        for (int i = 0; i < nCol; i++) {
+            (*this)[i].swap(idx1, idx2);
+        }
     }
     return (*this);
 }

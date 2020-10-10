@@ -186,7 +186,7 @@ int Vec::maxAbsIdx(int begin, int end)
     double max = fabs((*this)[begin]);
     for(int i = begin + 1; i < end; i++)
     {
-        if((*this)[i] > max)
+        if(fabs((*this)[i]) > max)
             idx = i;
     }
     return idx;
@@ -210,9 +210,11 @@ int Vec::minIdx(int begin, int end)
 Vec Vec::swap(int idx1, int idx2)
 {
     assert(idx1 >=0 && idx1 < (*this).size() && idx2 >=0 && idx2 <(*this).size());
-    double temp = (*this)[idx1];
-    (*this)[idx1] = (*this)[idx2];
-    (*this)[idx2] = temp;
+    if(idx1 != idx2) {
+        double temp = (*this)[idx1];
+        (*this)[idx1] = (*this)[idx2];
+        (*this)[idx2] = temp;
+    }
     return (*this);
 }
 

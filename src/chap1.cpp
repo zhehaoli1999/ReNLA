@@ -33,7 +33,7 @@ void solve(Matrix& A, Vec& b, string c)
 void homework1_1()
 {
     cout << " ========= HW 1.1 ==========" << endl;
-    const int n = 30;
+    const int n = 84;
     Matrix A = Matrix(n, n).setTripleDiag(6.0, 1.0, 8.0);
     Vec b(vector<double>(n, 15.0));
     b[0] = 7.0; b[n-1] = 14.0;
@@ -50,7 +50,7 @@ void homework1_2(Matrix& A1, Vec& b, Matrix& A2, Vec& b2) {
     solve(A1, b, "Choleskey gauss solve with sqrt used");
     solve(A1, b, "Improved Choleskey gauss solve");
 
-    solve(A2, b2, "Choleskey gauss solve with sqrt used");
+    //solve(A2, b2, "Choleskey gauss solve with sqrt used");
     solve(A2, b2, "Improved Choleskey gauss solve");
 
     cout << endl;
@@ -73,7 +73,7 @@ int main()
     Matrix A1 = Matrix(n, n).setTripleDiag(10.0, 1.0, 1.0);
     Vec b = Vec(n).setIncremental();
 
-    const int n2 = 7;
+    const int n2 = 40;
     Matrix A2 = Matrix(n2).setHilbert();
     Vec b2 = A2 * Vec(n2).setOne();
     homework1_2(A1, b,A2,b2);

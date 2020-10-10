@@ -28,6 +28,8 @@ void MatrixTest()
     Matrix g({{1,2,3,4,5},{6,7,8,9,0},{1,2,3,4,5}});
     cout << g;
     cout << g.transpose();
+    cout << "======= swap rows ========"<< endl;
+    cout << g.swapRow(0,1);
     cout << "======= slice ========"<< endl;
     auto u = g.transpose();
     cout << g.transpose()[{{0,3},1}];
@@ -55,7 +57,9 @@ void VecTest()
     cout << -x;
     cout << "======= max & min ========"<< endl;
     cout << x.maxIdx(0, 3);
+    cout << x.maxIdx(3, 3);
     cout << x.minIdx(0,3);
+    cout << x.minIdx(0,0);
     cout << "======= swap ========"<< endl;
     cout << x.swap(0,1);
     cout << "======= dot ========"<< endl;
@@ -120,7 +124,7 @@ void LUgaussPerf()
 }
 
 //int main() {
-//    MatrixTest();
+////    MatrixTest();
 //    VecTest();
 //    //SolveTest();
 //    //LUtest();
