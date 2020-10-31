@@ -47,15 +47,19 @@ Vec Vec::setIncremental()  {
     return (*this);
 }
 
-int Vec::size()
+int Vec::size() const
 {
     return data.size();
+}
+
+double Vec::operator[](const int idx) const {
+    return this->data[idx];
 }
 double& Vec::operator[](const int idx) {
     return this->data[idx];
 }
 
-Vec Vec::operator[](const pair<int, int> slice)
+Vec Vec::operator[](const pair<int, int> slice) const
 {
     assert(slice.second >= slice.first && slice.second <= (*this).size()
         && slice.first>=0);
@@ -95,7 +99,7 @@ Vec Vec::mulToSlice(int begin, int end, double a) {
     return (*this)[{begin, end}];
 }
 
-ostream& ReNLA::operator<<(ostream& os, Vec x)
+inline ostream& ReNLA::operator<<(ostream& os, Vec x)
 {
     os << "[";
     for(int i = 0; i < x.data.size(); i++)
@@ -107,76 +111,145 @@ ostream& ReNLA::operator<<(ostream& os, Vec x)
     return os;
 }
 
-Vec Vec::operator+(Vec &b)
+inline Vec ReNLA::operator+(Vec& a, Vec &b)
 {
-    assert(this->data.size() == b.data.size());
-    vector<double> v(this->data.size());
+    assert(a.size() == b.size());
+    vector<double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
-        v[i] = (*this)[i] + b[i];
-    }
-    return Vec(v);
-}
-Vec Vec::operator+(double b)
-{
-    vector<double> v(this->data.size());
-    for(int i =0; i < v.size(); i++)
-    {
-        v[i] = (*this)[i] + b;
+        v[i] = a[i] + b[i];
     }
     return Vec(v);
 }
 
-Vec Vec::operator-(double b)
+inline Vec ReNLA::operator+(Vec& a, double t)
 {
-    vector<double> v(this->data.size());
+    vector<double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
-        v[i] = (*this)[i] - b;
+        v[i] = a[i] + t;
     }
     return Vec(v);
 }
 
-Vec Vec::operator-()
+inline Vec ReNLA::operator+(double t, Vec& a)
 {
-    vector<double> v(this->data.size());
+    return a + t;
+}
+
+inline Vec ReNLA::operator-(Vec& a, Vec &b)
+{
+    assert(a.size() == b.size());
+    vector<double> v(a.size());
     for(int i =0; i < v.size(); i++)
+    {
+        v[i] = a[i] - b[i];
+    }
+    return Vec(v);
+}
+
+inline Vec ReNLA::operator-(Vec& a, double t)
+{
+    vector<double> v(a.size());
+    for(int i =0; i < v.size(); i++)
+    {
+        v[i] = a[i] - t;
+    }
+    return Vec(v);
+}
+
+inline Vec ReNLA::operator-(double t, Vec& a)
+{
+    return a - t;
+}
+
+inline Vec ReNLA::operator* (Vec& a, double t)
+{
+    vector<double> v(a.size());
+    for(int i =0; i < v.size(); i++)
+    {
+        v[i] = a[i] * t;
+    }
+    return Vec(v);
+}
+
+inline Vec ReNLA::operator* (double t, Vec& a)
+{
+    return  a * t;
+}
+
+inline Vec ReNLA::operator/ (Vec& a, double t)
+{
+    assert(fabs(t - 0.0) > eps);
+    vector<double> v(a.size());
+    for(int i =0; i < v.size(); i++)
+    {
+        v[i] = a[i] / t;
+    }
+    return Vec(v);
+}
+
+
+Vec Vec::operator-() const{
+    vector<double> v(this->size());
+    for(int i = 0; i < this->size(); i++)
     {
         v[i] = -(*this)[i];
     }
     return Vec(v);
 }
 
-Vec Vec::operator-(Vec &b)
+Vec& Vec::operator+=(const Vec& b)
 {
-    assert(this->data.size() == b.data.size());
-    vector<double> v(this->data.size());
-    for(int i =0; i < v.size(); i++)
+    assert((*this).size() == b.size());
+    for(int i =0; i <  (*this).size(); i++)
     {
-        v[i] = (*this)[i] - b[i];
+        (*this)[i] += b[i];
     }
-    return Vec(v);
+    return *this;
 }
 
-Vec Vec::operator*(double b)
+Vec& Vec::operator+=(const double t)
 {
-    vector<double> v(this->data.size());
-    for(int i =0; i < v.size(); i++)
+    for(int i =0; i <  (*this).size(); i++)
     {
-        v[i] = (*this)[i] * b;
+        (*this)[i] += t;
     }
-    return Vec(v);
+    return *this;
 }
 
-Vec Vec::operator/(double b)
+Vec& Vec::operator-=(const Vec& b)
 {
-    assert(fabs(b - 0.0) > eps);
-    vector<double> v(this->data.size());
-    for(int i =0; i < v.size(); i++)
+    return (*this) += -b;
+}
+
+
+Vec& Vec::operator-=(const double t)
+{
+    for(int i =0; i <  (*this).size(); i++)
     {
-        v[i] = (*this)[i] / b;
+        (*this)[i] -= t;
     }
-    return Vec(v);
+    return *this;
+}
+
+Vec& Vec::operator*=(const double t)
+{
+    for(int i =0; i <  (*this).size(); i++)
+    {
+        (*this)[i] *= t;
+    }
+    return *this;
+}
+
+Vec& Vec::operator/=(const double t)
+{
+    assert(fabs(t - 0.0) > eps);
+    for(int i =0; i <  (*this).size(); i++)
+    {
+        (*this)[i] /= t;
+    }
+    return *this;
 }
 
 int Vec::maxAbsIdx(int begin, int end)

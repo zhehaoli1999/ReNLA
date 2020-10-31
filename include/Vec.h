@@ -5,10 +5,9 @@
 #define CODES_VEC_H
 #include <vector>
 #include <iostream>
+#include "../include/constValues.h"
 
 using namespace std;
-
-constexpr double eps = 1e-40;
 
 namespace ReNLA {
     class Vec {
@@ -21,26 +20,38 @@ namespace ReNLA {
         Vec setIncremental();
         Vec setOne();
 
-        int size();
+        int size() const;
 
+        double operator[] (const int idx) const;
         double& operator[](const int idx);
-        Vec operator[](const pair<int, int>); // Vec slice
+        Vec operator[](const pair<int, int>) const; // Vec slice
 
         Vec setSlice(int begin, int end, Vec v);
         Vec getSlice(int begin, int end);
         Vec addToSlice(int begin, int end, Vec v);
         Vec mulToSlice(int begin, int end, double a);
 
-        friend ostream& operator<< (ostream& os, Vec);
-        Vec operator+(Vec& b);
-        Vec operator+(double b);
+        Vec operator-() const;
+        Vec& operator+=(const Vec& b);
+        Vec& operator+=(const double t);
+        Vec& operator-=(const Vec& b);
+        Vec& operator-=(const double t);
 
-        Vec operator-(Vec& b);
-        Vec operator-(double b);
-        Vec operator-();
+        Vec& operator*=(const double b);
+        Vec& operator/=(const double b);
 
-        Vec operator*(double b);
-        Vec operator/(double b);
+        inline friend ostream& operator<< (ostream& os, Vec);
+        inline friend Vec operator+ (Vec& a, Vec& b);
+        inline friend Vec operator+ (Vec& a, double t);
+        inline friend Vec operator+ (double t, Vec& a);
+
+        inline friend Vec operator- (Vec& a, Vec& b);
+        inline friend Vec operator- (Vec& a, double t);
+        inline friend Vec operator- (double t, Vec& a);
+
+        inline friend Vec operator* (Vec& v, double t);
+        inline friend Vec operator* (double t, Vec& v);
+        inline friend Vec operator/ (Vec& v, double t);
 
         double norm2();
         double norm1();

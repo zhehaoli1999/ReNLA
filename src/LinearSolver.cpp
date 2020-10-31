@@ -144,7 +144,6 @@ Matrix LinearSolver::CholeskyDecompose(Matrix &m, bool isImproved) {
         }
         // Store L in the low triangle part of A and D on the diag of A
     }
-    //cout << A;
     return A;
 }
 
