@@ -2,6 +2,7 @@
 // Created by 李喆昊 on 2020/9/29.
 //
 #include "../include/Matrix.h"
+#include <cmath>
 
 using namespace ReNLA;
 
@@ -67,7 +68,7 @@ Matrix::Matrix(int nRow, int nCol) : Matrix::Matrix{nRow, nCol, 0.0}
 Matrix::Matrix(int nRow) : Matrix::Matrix{nRow, nRow}
 {}
 
-vector<int> Matrix::shape() {
+vector<int> Matrix::shape() const {
     return {nRow, nCol};
 }
 
@@ -108,7 +109,11 @@ Matrix Matrix::setIdentity() {
     return (*this);
 }
 
-Vec& Matrix::operator[](const int idx) {
+Vec& Matrix::operator[](const int idx){
+    return colVecArray[idx];
+}
+
+Vec Matrix::operator[](const int idx) const{
     return colVecArray[idx];
 }
 
@@ -118,7 +123,13 @@ double& Matrix::operator[](const pair<int, int> idx)
     return colVecArray[idx.second][idx.first];
 }
 
-Vec Matrix::operator[](const pair<int, pair<int, int>> idx) {
+double Matrix::operator[](const pair<int, int> idx) const
+{
+    assert(idx.second >= 0 && idx.second < nCol && idx.first >= 0 && idx.first < nRow);
+    return colVecArray[idx.second][idx.first];
+}
+
+Vec Matrix::operator[](const pair<int, pair<int, int>> idx) const{
     int rowIdx = idx.first;
     auto colSlice = idx.second;
     assert(colSlice.second >= colSlice.first && colSlice.first >=0 && colSlice.second <= nCol);
@@ -130,13 +141,13 @@ Vec Matrix::operator[](const pair<int, pair<int, int>> idx) {
     return Vec(v);
 }
 
-Vec Matrix::operator[](const pair<pair<int, int>, int> idx) {
+Vec Matrix::operator[](const pair<pair<int, int>, int> idx) const{
     int colIdx = idx.second;
     auto rowSlice =idx.first;
     return (*this)[colIdx][{rowSlice.first, rowSlice.second}];
 }
 
-Matrix Matrix::operator[](const pair<pair<int, int>, pair<int, int> > slice) {
+Matrix Matrix::operator[](const pair<pair<int, int>, pair<int, int> > slice) const{
     auto rowSlice = slice.first;
     auto colSlice = slice.second;
     assert(colSlice.second >= colSlice.first && colSlice.first >=0 && colSlice.second <= nCol);
@@ -148,69 +159,184 @@ Matrix Matrix::operator[](const pair<pair<int, int>, pair<int, int> > slice) {
     return Matrix(m);
 }
 
-Matrix Matrix::getSlice(pair<pair<int, int>, pair<int, int>> slice)
+Matrix Matrix::getSlice(const pair<pair<int, int>, pair<int, int>> slice) const
 {
     return (*this)[slice];
 }
+bool ReNLA::operator==(const Matrix& a, const Matrix& b)
+{
+    assert(typeid(a) == typeid(Matrix));
+    assert(typeid(b) == typeid(Matrix));
+    if(a.nRow != b.nRow) return false;
+    if(a.nCol != b.nCol) return false;
+    for(int i =0 ; i < a.nRow; i++)
+    {
+        for(int j =0 ; j < a.nCol; j++) {
+            if (fabs(a[{i, j}] - b[{i, j}]) > eps)
+                return false;
+        }
+    }
+    return true;
+}
+Matrix ReNLA::operator+(const Matrix& a, const Matrix& b)
+{
+    assert(a.nRow == b.nRow);
+    assert(a.nCol == b.nCol);
+    Matrix m = Matrix(a.nRow, a.nCol).setZero();
+    for (int i = 0; i < a.nRow; i++)
+    {
+        for(int j = 0; j < a.nCol; j++)
+        {
+            m[{i,j}] = a[{i, j}] + b[{i,j}];
+        }
+    }
+    return m;
+}
 
-Matrix Matrix::operator*(Matrix &b) {
-    assert(this->nCol == b.nRow);
-    Matrix m = Matrix(this->nRow, b.nCol).setZero();
+Matrix ReNLA::operator+(const Matrix& a, const double b)
+{
+    Matrix m = Matrix(a.nRow, a.nCol).setZero();
+    for (int i = 0; i < a.nRow; i++)
+    {
+        for(int j = 0; j < a.nCol; j++)
+        {
+            m[{i,j}] = a[{i, j}] + b;
+        }
+    }
+    return m;
+}
+
+Matrix ReNLA::operator+( const double b, const Matrix& a) {
+    return a + b;
+}
+
+Matrix ReNLA::operator-(const Matrix& a, const Matrix& b)
+{
+    return a + (-b);
+}
+
+Matrix ReNLA::operator-(const Matrix& a, const double b) {
+    return a + (-b);
+}
+
+Matrix ReNLA::operator*(const Matrix& a, const Matrix &b) {
+    assert(a.nCol == b.nRow);
+    Matrix m = Matrix(a.nRow, b.nCol).setZero();
 
     for (int i = 0; i < m.nRow; i++) {
         for (int j = 0; j < m.nCol; j++) {
-            for (int k = 0; k < this->nCol; k++) {
-                m[{i,j}] += (*this)[{i,k}] * b[{k,j}];
+            for (int k = 0; k < a.nCol; k++) {
+                m[{i,j}] += a[{i,k}] * b[{k,j}];
             }
         }
     }
     return m;
 }
 
-Matrix Matrix::operator*(double a) {
-    Matrix m = Matrix(this->nRow, this->nCol).setZero();
+Matrix ReNLA::matMul(const Matrix& a, const Matrix& b)
+{
+    return a * b;
+}
+
+Matrix ReNLA::operator*(const Matrix& a, const double b) {
+    Matrix m = Matrix(a.nRow, a.nCol).setZero();
     for(int i = 0; i < m.nRow; i++)
     {
         for(int j = 0; j < m.nCol; j++)
         {
-            m[{i,j}] = (*this)[{i,j}] * a;
+            m[{i,j}] = a[{i,j}] * b;
         }
     }
     return m;
 }
 
-Vec Matrix::operator*(Vec b) {
-    assert(nCol == b.size());
-    Vec v(nRow);
-    for(int i = 0; i < nRow; i++){
-        for(int j = 0; j < nCol; j++) {
-            v[i] += (*this)[{i, j}] * b[j];
+Matrix ReNLA::operator*(const double b, const Matrix& a)
+{
+    return a * b;
+}
+
+Vec ReNLA::operator*(const Matrix& a, const Vec& b) {
+    assert(a.nCol == b.size());
+    Vec v(a.nRow);
+    for(int i = 0; i < a.nRow; i++){
+        for(int j = 0; j < a.nCol; j++) {
+            v[i] += a[{i, j}] * b[j];
         }
     }
     return v;
 }
 
-Matrix Matrix::operator+(double a) {
-    Matrix m = Matrix(this->nRow, this->nCol).setZero();
+//Vec ReNLA::operator* (const Vec& b, const Matrix& a)
+//{
+//    assert(b.size() == a.nRow);
+//    //TODO: do we need to give Vec shape (1, n) or shape (n, 1) ?
+//
+//
+//}
+
+Matrix ReNLA::operator/(const Matrix& a, const double b) {
+    assert(fabs(b - 0.0) > eps);
+    Matrix m = Matrix(a.nRow, a.nCol).setZero();
     for(int i = 0; i < m.nRow; i++)
     {
         for(int j = 0; j < m.nCol; j++)
         {
-            m[{i,j}] = (*this)[{i,j}] + a;
+            m[{i,j}] = a[{i,j}] / b;
         }
     }
     return m;
 }
 
-Matrix Matrix::operator*=(double a)
-{
-    for(int i = 0; i < this->nRow; i ++)
+Matrix Matrix::operator-() const {
+    Matrix m = Matrix(this->nRow, this->nCol).setZero();
+    for(int i = 0 ;i < m.nRow; i++)
     {
-        for(int j = 0; j < this->nCol; j++)
+        for(int j =0 ;j < m.nCol; j++)
         {
-            (*this)[{i,j}] *= a;
+            m[{i, j}] = - (*this)[{i, j}];
         }
     }
+    return m;
+}
+Matrix& Matrix::operator/=(const double b)
+{
+    (*this) = (*this) / b;
+    return (*this);
+}
+
+Matrix& Matrix::operator+=(const Matrix& a) {
+    (*this) = (*this) + a;
+    return (*this);
+}
+
+Matrix& Matrix::operator+=(const double a) {
+    (*this) = (*this) + a;
+    return (*this);
+}
+
+Matrix& Matrix::operator-=(const Matrix& a) {
+    (*this) = (*this) - a;
+    return (*this);
+}
+
+Matrix& Matrix::operator-=(const double a) {
+    (*this) = (*this) - a;
+    return (*this);
+}
+
+Matrix& Matrix::operator*=(const Matrix &b) {
+    (*this) = (*this) * b;
+    return (*this);
+}
+
+//Vec Matrix::operator*=(const Vec& b) {
+//    Vec v = (*this) * b;
+//    return v;
+//}
+
+Matrix& Matrix::operator*=(const double a)
+{
+    (*this) = (*this) * a;
     return (*this);
 }
 
@@ -240,20 +366,6 @@ Matrix Matrix::setHilbert() {
     return (*this);
 }
 
-Matrix Matrix::operator+(Matrix &b)
-{
-    assert(this->nRow == b.nRow);
-    assert(this->nCol == b.nCol);
-    Matrix m = Matrix(this->nRow, this->nCol).setZero();
-    for(int i = 0; i < this->nRow; i ++)
-    {
-        for(int j = 0; j < this->nCol; j++)
-        {
-            m[{i,j}] = (*this)[{i,j}] + b[{i,j}];
-        }
-    }
-    return m;
-}
 
 ostream& ReNLA::operator<<(ostream &os, Matrix a) {
     os << "[";

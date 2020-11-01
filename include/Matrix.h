@@ -30,10 +30,12 @@ namespace ReNLA {
         Matrix setHilbert();
 
         // get entry of Matrix[col][row]
-        Vec& operator[](const int idx) const;
+        Vec& operator[](const int idx);
+        Vec operator[](const int idx) const;
 
         // get entry of Matrix[{row, col}]
-        double& operator[](const pair<int, int>) const;
+        double& operator[](const pair<int, int>);
+        double operator[](const pair<int, int>) const;
 
         // slice row vector
         Vec operator[](const pair<int, pair<int, int>>) const;
@@ -43,7 +45,7 @@ namespace ReNLA {
         // slice sub matrix
         Matrix operator[](const pair<pair<int, int>, pair<int, int>>) const;
 
-        Matrix setSlice(const pair<pair<int, int>, pair<int, int>>, Matrix&);
+        Matrix setSlice(const pair<pair<int, int>, pair<int, int>>, const Matrix&);
         Matrix getSlice(const pair<pair<int, int>, pair<int, int>>) const;
 
         friend bool operator== (const Matrix& a, const Matrix& b);
@@ -55,10 +57,13 @@ namespace ReNLA {
         friend Matrix operator-(const Matrix& a, const Matrix& b);
         friend Matrix operator-(const Matrix& a, const double b);
 
+        friend Matrix operator* (const Matrix& a, const Matrix& b);
+        friend Matrix matMul(const Matrix& a, const Matrix& b);
+
+        friend Vec operator* (const Matrix& a, const Vec& v);
+        //TODO:  friend Vec operator* (const Vec& v, const Matrix& a);
         friend Matrix operator*(const Matrix& a, const double b);
         friend Matrix operator*(const double b, const Matrix& a);
-
-        friend Matrix matMul(const Matrix& a, const Matrix& b);
 
         friend Matrix operator/(const Matrix& a, const double b);
 
@@ -66,16 +71,17 @@ namespace ReNLA {
         Matrix& operator+=(const Matrix &);
         Matrix& operator+=(const double);
 
-        Matrix& operator-=(Matrix &);
-        Matrix operator-(double);
-
-        Matrix operator*(double);
-        Matrix operator*=(double);
+        Matrix& operator-=(const Matrix &);
+        Matrix& operator-=(const double);
 
         // Matrix multiplication
-        Matrix operator*(Matrix& b);
-        Vec operator*(Vec b);
-        Matrix elementwiseMul(Matrix &b);
+        Matrix& operator*=(const Matrix& b);
+        Matrix& operator*=(const double);
+        //TODO: Vec operator*=(const Vec& b);
+
+        Matrix& operator/= (const double);
+
+        Matrix& elementwiseMul(Matrix &b);
         friend ostream& operator<<(ostream& os, Matrix a);
 
         Matrix swapRow(int idx1, int idx2);
