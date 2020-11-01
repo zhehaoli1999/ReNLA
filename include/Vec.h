@@ -14,11 +14,11 @@ namespace ReNLA {
     public:
         Vec(vector<double>);
         Vec(int n);
-        Vec(int n, double num);
 
         Vec setOneHot(int idx);
         Vec setIncremental();
         Vec setOne();
+        Vec setNum(const double);
 
         int size() const;
 
@@ -40,18 +40,20 @@ namespace ReNLA {
         Vec& operator*=(const double b);
         Vec& operator/=(const double b);
 
-        inline friend ostream& operator<< (ostream& os, Vec);
-        inline friend Vec operator+ (Vec& a, Vec& b);
-        inline friend Vec operator+ (Vec& a, double t);
-        inline friend Vec operator+ (double t, Vec& a);
+        friend ostream& operator<< (ostream& os, const Vec&);
+        friend Vec operator+ (const Vec& a, const Vec& b);
+        friend Vec operator+ (const Vec& a, const double t);
+        friend Vec operator+ (const double t, const Vec& a);
 
-        inline friend Vec operator- (Vec& a, Vec& b);
-        inline friend Vec operator- (Vec& a, double t);
-        inline friend Vec operator- (double t, Vec& a);
+        friend Vec operator- (const Vec& a, const Vec& b);
+        friend Vec operator- (const Vec& a, double t);
+        friend Vec operator- (const double t, const Vec& a);
 
-        inline friend Vec operator* (Vec& v, double t);
-        inline friend Vec operator* (double t, Vec& v);
-        inline friend Vec operator/ (Vec& v, double t);
+        friend Vec operator* (const Vec& v, const double t);
+        friend Vec operator* (const double t, const Vec& v);
+        friend Vec operator/ (const Vec& v, const double t);
+
+        friend bool operator== (const Vec& a, const Vec& b);
 
         double norm2();
         double norm1();

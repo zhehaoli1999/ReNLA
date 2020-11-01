@@ -16,10 +16,10 @@ Vec::Vec(int n)
     data = vector<double>(n, 0.0);
 }
 
-Vec::Vec(int n, double num)
-{
-    data = vector<double>(n, num);
-}
+//Vec::Vec(int n, double num)
+//{
+//    data = vector<double>(n, num);
+//}
 
 Vec Vec::setOneHot(int idx) {
     assert(idx >=0 && idx < (*this).size());
@@ -32,9 +32,13 @@ Vec Vec::setOneHot(int idx) {
 }
 
 Vec Vec::setOne() {
+    return (*this).setNum(1.0);
+}
+
+Vec Vec::setNum(const double num) {
     for(int i = 0; i < (*this).size(); i++)
     {
-        (*this)[i] = 1.0;
+        (*this)[i] = num;
     }
     return (*this);
 }
@@ -99,7 +103,7 @@ Vec Vec::mulToSlice(int begin, int end, double a) {
     return (*this)[{begin, end}];
 }
 
-inline ostream& ReNLA::operator<<(ostream& os, Vec x)
+ostream& ReNLA::operator<<(ostream& os, const Vec& x)
 {
     os << "[";
     for(int i = 0; i < x.data.size(); i++)
@@ -111,7 +115,7 @@ inline ostream& ReNLA::operator<<(ostream& os, Vec x)
     return os;
 }
 
-inline Vec ReNLA::operator+(Vec& a, Vec &b)
+Vec ReNLA::operator+(const Vec& a, const Vec &b)
 {
     assert(a.size() == b.size());
     vector<double> v(a.size());
@@ -122,7 +126,7 @@ inline Vec ReNLA::operator+(Vec& a, Vec &b)
     return Vec(v);
 }
 
-inline Vec ReNLA::operator+(Vec& a, double t)
+Vec ReNLA::operator+(const Vec& a, const double t)
 {
     vector<double> v(a.size());
     for(int i =0; i < v.size(); i++)
@@ -132,12 +136,12 @@ inline Vec ReNLA::operator+(Vec& a, double t)
     return Vec(v);
 }
 
-inline Vec ReNLA::operator+(double t, Vec& a)
+Vec ReNLA::operator+(const double t, const Vec& a)
 {
     return a + t;
 }
 
-inline Vec ReNLA::operator-(Vec& a, Vec &b)
+Vec ReNLA::operator-(const Vec& a, const Vec &b)
 {
     assert(a.size() == b.size());
     vector<double> v(a.size());
@@ -148,7 +152,7 @@ inline Vec ReNLA::operator-(Vec& a, Vec &b)
     return Vec(v);
 }
 
-inline Vec ReNLA::operator-(Vec& a, double t)
+Vec ReNLA::operator-(const Vec& a, const double t)
 {
     vector<double> v(a.size());
     for(int i =0; i < v.size(); i++)
@@ -158,12 +162,12 @@ inline Vec ReNLA::operator-(Vec& a, double t)
     return Vec(v);
 }
 
-inline Vec ReNLA::operator-(double t, Vec& a)
+Vec ReNLA::operator-(const double t, const Vec& a)
 {
     return a - t;
 }
 
-inline Vec ReNLA::operator* (Vec& a, double t)
+Vec ReNLA::operator* (const Vec& a, const double t)
 {
     vector<double> v(a.size());
     for(int i =0; i < v.size(); i++)
@@ -173,12 +177,11 @@ inline Vec ReNLA::operator* (Vec& a, double t)
     return Vec(v);
 }
 
-inline Vec ReNLA::operator* (double t, Vec& a)
+Vec ReNLA::operator* (const double t, const Vec& a)
 {
     return  a * t;
 }
-
-inline Vec ReNLA::operator/ (Vec& a, double t)
+Vec ReNLA::operator/ (const Vec& a, const double t)
 {
     assert(fabs(t - 0.0) > eps);
     vector<double> v(a.size());
@@ -189,6 +192,19 @@ inline Vec ReNLA::operator/ (Vec& a, double t)
     return Vec(v);
 }
 
+bool ReNLA::operator==(const Vec &a, const Vec &b)
+{
+    if(a.size() != b.size()) return false;
+    else
+    {
+        for(int i = 0; i < a.size(); i++)
+        {
+            if(fabs(a[i] - b[i]) > eps) return false;
+            // TODO: maybe a[i] != b[i] also works here?
+        }
+        return true;
+    }
+}
 
 Vec Vec::operator-() const{
     vector<double> v(this->size());

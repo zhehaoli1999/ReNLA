@@ -71,7 +71,7 @@ vector<int> Matrix::shape() {
     return {nRow, nCol};
 }
 
-Matrix Matrix::transpose() {
+Matrix Matrix::transpose() const{
     vector<vector<double>> mat(nCol);
     for(int i = 0; i < nRow; i++)
     {

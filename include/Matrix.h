@@ -19,9 +19,9 @@ namespace ReNLA {
         Matrix(int nRow, int nCol); // Create a zero matrix
         Matrix(int nRow);
 
-        vector<int> shape();
+        vector<int> shape() const;
 
-        Matrix transpose();
+        Matrix transpose() const;
 
         Matrix setNum(double num);
         Matrix setIdentity();
@@ -30,28 +30,43 @@ namespace ReNLA {
         Matrix setHilbert();
 
         // get entry of Matrix[col][row]
-        Vec& operator[](const int idx);
+        Vec& operator[](const int idx) const;
 
         // get entry of Matrix[{row, col}]
-        double& operator[](const pair<int, int>);
+        double& operator[](const pair<int, int>) const;
 
         // slice row vector
-        Vec operator[](const pair<int, pair<int, int>>);
+        Vec operator[](const pair<int, pair<int, int>>) const;
         // slice col vector
-        Vec operator[](const pair<pair<int, int>, int>);
+        Vec operator[](const pair<pair<int, int>, int>) const;
 
         // slice sub matrix
-        Matrix operator[](const pair<pair<int, int>, pair<int, int>>);
+        Matrix operator[](const pair<pair<int, int>, pair<int, int>>) const;
 
-        Matrix setSlice(pair<pair<int, int>, pair<int, int>>, Matrix&);
-        Matrix getSlice(pair<pair<int, int>, pair<int, int>>);
+        Matrix setSlice(const pair<pair<int, int>, pair<int, int>>, Matrix&);
+        Matrix getSlice(const pair<pair<int, int>, pair<int, int>>) const;
 
-        Matrix operator+(Matrix &);
-        Matrix operator+=(Matrix &);
-        Matrix operator+(double);
-        Matrix operator+=(double);
+        friend bool operator== (const Matrix& a, const Matrix& b);
 
-        Matrix operator-(Matrix &);
+        friend Matrix operator+(const Matrix& a, const Matrix& b);
+        friend Matrix operator+(const Matrix& a, const double b);
+        friend Matrix operator+(const double b, const Matrix& a);
+
+        friend Matrix operator-(const Matrix& a, const Matrix& b);
+        friend Matrix operator-(const Matrix& a, const double b);
+
+        friend Matrix operator*(const Matrix& a, const double b);
+        friend Matrix operator*(const double b, const Matrix& a);
+
+        friend Matrix matMul(const Matrix& a, const Matrix& b);
+
+        friend Matrix operator/(const Matrix& a, const double b);
+
+        Matrix operator-() const;
+        Matrix& operator+=(const Matrix &);
+        Matrix& operator+=(const double);
+
+        Matrix& operator-=(Matrix &);
         Matrix operator-(double);
 
         Matrix operator*(double);
