@@ -4,7 +4,6 @@
 #include "../include/commonHeader.h"
 
 using namespace std;
-using namespace ReNLA;
 
 void solve(Matrix& A, Vec& b, string c)
 {

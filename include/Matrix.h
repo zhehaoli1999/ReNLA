@@ -48,6 +48,7 @@ namespace ReNLA {
         Matrix setSlice(const pair<pair<int, int>, pair<int, int>>, const Matrix&);
         Matrix getSlice(const pair<pair<int, int>, pair<int, int>>) const;
 
+        friend ostream& operator<<(ostream& os, const Matrix a);
         friend bool operator== (const Matrix& a, const Matrix& b);
 
         friend Matrix operator+(const Matrix& a, const Matrix& b);
@@ -82,9 +83,12 @@ namespace ReNLA {
         Matrix& operator/= (const double);
 
         Matrix& elementwiseMul(Matrix &b);
-        friend ostream& operator<<(ostream& os, Matrix a);
 
         Matrix swapRow(int idx1, int idx2);
+
+        double normInfin() const;
+        double norm1() const;
+        double norm2() const;
 
     protected:
         vector<Vec> colVecArray;

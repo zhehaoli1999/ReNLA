@@ -367,7 +367,7 @@ Matrix Matrix::setHilbert() {
 }
 
 
-ostream& ReNLA::operator<<(ostream &os, Matrix a) {
+ostream& ReNLA::operator<<(ostream &os, const Matrix a) {
     os << "[";
     for(int i = 0; i < a.nRow; i++)
     {
@@ -394,6 +394,24 @@ Matrix Matrix::swapRow(int idx1, int idx2) {
     return (*this);
 }
 
+double Matrix::normInfin() const {
+    double maxN = 0.0;
+    for(int i = 0; i < this->nRow; i++)
+    {
+        Vec r = (*this)[{i, {0, this->nCol}}];
+        double rN = r.norm1();
+        if(rN > maxN)
+            maxN = rN;
+    }
+    return maxN;
+}
 
+double Matrix::norm1() const {
+    // TODO
+}
+
+double Matrix::norm2() const {
+    // TODO
+}
 
 

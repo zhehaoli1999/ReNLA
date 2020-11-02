@@ -23,6 +23,8 @@ namespace ReNLA {
         Vec LUgaussSolve(bool isColPivot = true);
         Vec CholeskeyGaussSolve(bool isImproved = true);
 
+        static double estimateConditionalNum(Matrix m);
+
     private:
         Matrix A;
         Vec b;

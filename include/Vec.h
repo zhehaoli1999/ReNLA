@@ -19,6 +19,7 @@ namespace ReNLA {
         Vec setIncremental();
         Vec setOne();
         Vec setNum(const double);
+        Vec setRandom(const double min, const double max);
 
         int size() const;
 
@@ -55,17 +56,22 @@ namespace ReNLA {
 
         friend bool operator== (const Vec& a, const Vec& b);
 
-        double norm2();
-        double norm1();
-        double dist2(Vec& b);
-        static double dist2(Vec& a, Vec& b);
-        double length();
-        Vec normalize();
-        double dot(Vec b);
+        double normInfin() const;
+        double norm2() const;
+        double norm1() const;
+        double dist2(const Vec& b) const;
+        static double dist2(const Vec& a, const Vec& b);
+        double length() const;
+        Vec& normalize();
+        double dot(const Vec& b) const;
 
-        int maxAbsIdx(int begin, int end);
-        int maxIdx(int begin, int end);
-        int minIdx(int begin, int end);
+        int maxAbsIdx(int begin, int end) const;
+        int maxIdx(int begin, int end) const ;
+        int minIdx(int begin, int end) const;
+        double absMax() const;
+
+        Vec getSign() const;
+
 
         Vec swap(int idx1, int idx2);
 

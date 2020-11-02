@@ -6,6 +6,7 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
+#include <random>
 using namespace ReNLA;
 
 Vec::Vec(vector<double>v) : data{std::move(v)}
@@ -51,6 +52,15 @@ Vec Vec::setIncremental()  {
     return (*this);
 }
 
+Vec Vec::setRandom(const double min, const double max) {
+    assert(max > min);
+    std::uniform_real_distribution<double> distribution(min, max);
+    std::mt19937 generator;
+    for(int i =0 ; i < this->size(); i++)
+        (*this)[i] = distribution(generator);
+
+    return (*this);
+}
 int Vec::size() const
 {
     return data.size();
@@ -268,20 +278,23 @@ Vec& Vec::operator/=(const double t)
     return *this;
 }
 
-int Vec::maxAbsIdx(int begin, int end)
+int Vec::maxAbsIdx(int begin, int end) const
 {
     assert(begin >=0 && end >= begin && end <= (*this).size());
     int idx = begin;
     double max = fabs((*this)[begin]);
     for(int i = begin + 1; i < end; i++)
     {
-        if(fabs((*this)[i]) > max)
+        auto t = fabs((*this)[i]);
+        if( t > max) {
             idx = i;
+            max = t;
+        }
     }
     return idx;
 }
 
-int Vec::maxIdx(int begin, int end)
+int Vec::maxIdx(int begin, int end) const
 {
     assert(begin >=0 && end >= begin && end <= (*this).size());
     auto iter = std::max_element(this->data.begin() + begin,this->data.begin() + end);
@@ -289,7 +302,7 @@ int Vec::maxIdx(int begin, int end)
     return idx;
 }
 
-int Vec::minIdx(int begin, int end)
+int Vec::minIdx(int begin, int end) const
 {
     assert(begin >=0 && end >= begin && end <= (*this).size());
     auto iter = std::min_element(this->data.begin() + begin,this->data.begin() + end);
@@ -307,7 +320,7 @@ Vec Vec::swap(int idx1, int idx2)
     return (*this);
 }
 
-double Vec::dot(Vec b)
+double Vec::dot(const Vec& b) const
 {
     assert((*this).size() == b.size());
     double dot = 0.0;
@@ -318,14 +331,46 @@ double Vec::dot(Vec b)
     return dot;
 }
 
-double Vec::dist2(Vec &b) {
+double Vec::dist2(const Vec &b) const {
     return (*this - b).dot(*this - b);
 }
 
-double Vec::dist2(Vec &a, Vec &b) {
+double Vec::dist2(const Vec &a, const Vec &b) {
     return a.dist2(b);
 }
 
-double Vec::length() {
-    return sqrt(dist2(*this, *this));
+double Vec::length() const {
+    return sqrt((*this).dot(*this));
+}
+
+Vec Vec::getSign() const
+{
+    Vec signV(this->size());
+    for(int i = 0 ; i < this->size(); i++)
+    {
+        ((*this)[i] >= 0) ? (signV[i] = 1.0) : (signV[i] = -1.0);
+    }
+    return signV;
+}
+
+double Vec::absMax() const {
+    int idx = (*this).maxAbsIdx(0, this->size());
+    return fabs((*this)[idx]);
+}
+
+double Vec::norm1() const{
+    double n1 = 0.0;
+    for(int i = 0; i < (*this).size(); i++)
+    {
+        n1 += fabs((*this)[i]);
+    }
+    return n1;
+}
+
+double Vec::normInfin() const {
+    return (*this).absMax();
+}
+
+double Vec::norm2() const {
+    return this->length();
 }

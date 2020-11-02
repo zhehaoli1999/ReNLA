@@ -3,6 +3,7 @@
 //
 #include "../include/Vec.h"
 #include "gtest/gtest.h"
+#include <cmath>
 
 using namespace ReNLA;
 
@@ -60,9 +61,12 @@ namespace {
         EXPECT_EQ(x.maxIdx(0, 3), 2);
         EXPECT_EQ(x.maxIdx(0, 6), 3);
         EXPECT_EQ(x.minIdx(3, 6), 5);
+
+        Vec y({3400, -60000, 270000, -400000, 200000});
+        EXPECT_EQ(y.maxAbsIdx(0, y.size()), 3);
     }
 
-    TEST(VecTest, dot_and_norm)
+    TEST(VecTest, dot)
     {
         //TODO
     }
@@ -70,6 +74,17 @@ namespace {
     TEST(VecTest, swap)
     {
 
+    }
+
+    TEST(VecTest, norm)
+    {
+        Vec x({-5, 1, 2, 3, 4});
+        Vec y({3400, -60000, 270000, -400000, 200000});
+        EXPECT_EQ(x.normInfin(), 5);
+        EXPECT_EQ(y.normInfin(), 400000);
+        EXPECT_EQ(x.norm1(), 15);
+        EXPECT_EQ(x.dot(x), 25.0 + 1.0 + 4.0 + 9.0 + 16.0 );
+        EXPECT_EQ(x.norm2(), sqrt(25.0 + 1.0 + 4.0 + 9.0 + 16.0));
     }
 }
 

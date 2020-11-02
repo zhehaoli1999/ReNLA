@@ -44,15 +44,12 @@ namespace {
         EXPECT_EQ((b[{{0,3},{0, 2}}]), Matrix({{1, 2},{3,1},{0,3}}));
 
         // row vector slice
-        cout << b[{1, {1, 3}}];
         EXPECT_EQ((b[{1, {1, 3}}]), Vec({1,2}));
 
         // col vector slice
-        cout << b[{{0, 2}, 1}];
         EXPECT_EQ((b[{{0, 2}, 0}]), Vec({1, 3}));
 
         // sub-matrix slice
-        cout << b[{{0,2},{1,3}}];
         EXPECT_EQ( (b[{{0,2},{1,3}}]), Matrix({{2, 0},{1,2}}));
     }
 
@@ -88,6 +85,13 @@ namespace {
 
     TEST(MatrixTest, swap)
     {
+        // TODO
+    }
 
+    TEST(MatrixTest, norm)
+    {
+        EXPECT_EQ(b.normInfin(), 6);
+        auto m = Matrix(3, 3).setTripleDiag(-1, 1, -5);
+        EXPECT_EQ(m.normInfin(), 7);
     }
 }

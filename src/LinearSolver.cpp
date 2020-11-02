@@ -175,3 +175,33 @@ Vec LinearSolver::CholeskeyGaussSolve(bool isImproved) {
         return x;
     }
 }
+
+double LinearSolver::estimateConditionalNum(Matrix A) {
+    // First, get the estimation of infinity norm of A^-1
+    auto At = A.transpose();
+    double n = At.shape()[0]; // nRow
+    Vec x = Vec(n).setNum(1.0 / n);
+    double nu = 0.0;
+
+    bool flag = true;
+    while(flag)
+    {
+        Vec w = LinearSolver(At, x).LUgaussSolve();
+        Vec v = w.getSign();
+        Vec z = LinearSolver(A, v).LUgaussSolve();
+
+        int maxAbsIdx = z.maxAbsIdx(0, z.size());
+        auto a = z.normInfin();
+        auto b = z.dot(x);
+        if(z.normInfin() <= z.dot(x))
+        {
+            flag = false;
+            nu = w.norm1();
+        }
+        else
+            x.setOneHot(maxAbsIdx);
+    }
+
+    // get conditional num.
+    return nu * A.normInfin();
+}

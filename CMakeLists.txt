@@ -4,7 +4,8 @@ project(Codes)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories("/usr/local/include")
-add_executable(Codes src/main.cpp src/Matrix.cpp include/Matrix.h src/LinearSolver.cpp include/LinearSolver.h src/Vec.cpp include/Vec.h src/chap1.cpp src/Timer.cpp include/Timer.h)
+add_executable(Chap1 src/Matrix.cpp include/Matrix.h src/LinearSolver.cpp include/LinearSolver.h src/Vec.cpp include/Vec.h src/chap1.cpp src/Timer.cpp include/Timer.h)
+add_executable(Chap2 src/Matrix.cpp include/Matrix.h src/LinearSolver.cpp include/LinearSolver.h src/Vec.cpp include/Vec.h src/chap2.cpp src/Timer.cpp include/Timer.h)
 
 find_library(GTEST libgtest.a  /usr/local/lib/)
 find_library(GTEST_MAIN libgtest_main.a  /usr/local/lib/)

@@ -12,4 +12,5 @@
 #include <iostream>
 #include <string>
 
+using namespace ReNLA;
 #endif //CODES_COMMONHEADER_H
