@@ -33,7 +33,7 @@ namespace {
                                         {0, 2, 1}}));
     }
 
-    TEST(MatrixTest, slice)
+    TEST(MatrixTest, getSlice)
     {
 
         // indexing
@@ -51,6 +51,16 @@ namespace {
 
         // sub-matrix slice
         EXPECT_EQ( (b[{{0,2},{1,3}}]), Matrix({{2, 0},{1,2}}));
+    }
+
+    TEST(MatrixTest, setSlice)
+    {
+        Matrix t = Matrix(3, 3).setIdentity();
+        t.setSlice({{0,2},{0,2}}, Matrix({{1,2},{3,4}}));
+        EXPECT_EQ(t, Matrix({{1,2,0},
+                                   {3,4,0},
+                                   {0,0,1}}));
+
     }
 
     TEST(MatrixTest, add_and_minus)

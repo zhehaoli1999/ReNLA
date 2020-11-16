@@ -12,71 +12,70 @@ using namespace std;
 namespace ReNLA {
     class Vec {
     public:
-        Vec(vector<double>);
+        Vec(vector<long double>);
         Vec(int n);
 
         Vec setOneHot(int idx);
         Vec setIncremental();
         Vec setOne();
-        Vec setNum(const double);
-        Vec setRandom(const double min, const double max);
+        Vec setNum(const long double);
+        Vec setRandom(const long double min, const long double max);
 
         int size() const;
 
-        double operator[] (const int idx) const;
-        double& operator[](const int idx);
+        long double operator[] (const int idx) const;
+        long double& operator[](const int idx);
         Vec operator[](const pair<int, int>) const; // Vec slice
 
         Vec setSlice(int begin, int end, Vec v);
         Vec getSlice(int begin, int end);
         Vec addToSlice(int begin, int end, Vec v);
-        Vec mulToSlice(int begin, int end, double a);
+        Vec mulToSlice(int begin, int end, long double a);
 
         Vec operator-() const;
         Vec& operator+=(const Vec& b);
-        Vec& operator+=(const double t);
+        Vec& operator+=(const long double t);
         Vec& operator-=(const Vec& b);
-        Vec& operator-=(const double t);
+        Vec& operator-=(const long double t);
 
-        Vec& operator*=(const double b);
-        Vec& operator/=(const double b);
+        Vec& operator*=(const long double b);
+        Vec& operator/=(const long double b);
 
         friend ostream& operator<< (ostream& os, const Vec&);
         friend Vec operator+ (const Vec& a, const Vec& b);
-        friend Vec operator+ (const Vec& a, const double t);
-        friend Vec operator+ (const double t, const Vec& a);
+        friend Vec operator+ (const Vec& a, const long double t);
+        friend Vec operator+ (const long double t, const Vec& a);
 
         friend Vec operator- (const Vec& a, const Vec& b);
-        friend Vec operator- (const Vec& a, double t);
-        friend Vec operator- (const double t, const Vec& a);
+        friend Vec operator- (const Vec& a, long double t);
+        friend Vec operator- (const long double t, const Vec& a);
 
-        friend Vec operator* (const Vec& v, const double t);
-        friend Vec operator* (const double t, const Vec& v);
-        friend Vec operator/ (const Vec& v, const double t);
+        friend Vec operator* (const Vec& v, const long double t);
+        friend Vec operator* (const long double t, const Vec& v);
+        friend Vec operator/ (const Vec& v, const long double t);
 
         friend bool operator== (const Vec& a, const Vec& b);
 
-        double normInfin() const;
-        double norm2() const;
-        double norm1() const;
-        double dist2(const Vec& b) const;
-        static double dist2(const Vec& a, const Vec& b);
-        double length() const;
+        long double normInfin() const;
+        long double norm2() const;
+        long double norm1() const;
+        long double dist2(const Vec& b) const;
+        static long double dist2(const Vec& a, const Vec& b);
+        long double length() const;
         Vec& normalize();
-        double dot(const Vec& b) const;
+        long double dot(const Vec& b) const;
 
         int maxAbsIdx(int begin, int end) const;
         int maxIdx(int begin, int end) const ;
         int minIdx(int begin, int end) const;
-        double absMax() const;
+        long double absMax() const;
 
         Vec getSign() const;
-
 
         Vec swap(int idx1, int idx2);
 
     private:
-        vector<double> data;
+        vector<long double> data;
     };
 }
 

@@ -29,7 +29,7 @@ void homework1_1()
     cout << " ========= HW 1.1 ==========" << endl;
     const int n = 84;
     Matrix A = Matrix(n, n).setTripleDiag(6.0, 1.0, 8.0);
-    Vec b(vector<double>(n, 15.0));
+    Vec b(vector<long double>(n, 15.0));
     b[0] = 7.0; b[n-1] = 14.0;
 
     solve(A, b, "basic gauss solve");

@@ -14,7 +14,13 @@ Matrix::Matrix(vector<Vec> v) : colVecArray(v)
     nRow = v[0].size();
 }
 
-Matrix::Matrix(vector<vector<double> > v, bool isColPrior)
+Matrix::Matrix(const Vec& v) : colVecArray({v})
+{
+    nCol = 1;
+    nRow = v.size();
+}
+
+Matrix::Matrix(vector<vector<long double> > v, bool isColPrior)
 {
     assert(!v.empty());
     assert(!v[0].empty());
@@ -30,7 +36,7 @@ Matrix::Matrix(vector<vector<double> > v, bool isColPrior)
         nCol = v[0].size();
         for(int i = 0; i < nCol; i++)
         {
-            vector<double> colVec;
+            vector<long double> colVec;
             for(int j = 0; j < nRow; j++)
             {
                 colVec.push_back(v[j][i]);
@@ -40,7 +46,7 @@ Matrix::Matrix(vector<vector<double> > v, bool isColPrior)
     }
 }
 
-Matrix::Matrix(vector<double> v)
+Matrix::Matrix(vector<long double> v)
 {
     assert(!v.empty());
     colVecArray.emplace_back(v);
@@ -48,14 +54,14 @@ Matrix::Matrix(vector<double> v)
     nRow = v.size();
 }
 
-Matrix::Matrix(int nRow, int nCol, double num)
+Matrix::Matrix(int nRow, int nCol, long double num)
 {
     assert(nRow > 0);
     assert(nCol > 0);
     vector<Vec> mat;
     for(int i = 0; i < nCol; i++)
     {
-        mat.emplace_back(vector<double>(nRow, num));
+        mat.emplace_back(vector<long double>(nRow, num));
     }
     colVecArray = mat;
     this->nRow = nRow;
@@ -73,7 +79,7 @@ vector<int> Matrix::shape() const {
 }
 
 Matrix Matrix::transpose() const{
-    vector<vector<double>> mat(nCol);
+    vector<vector<long double>> mat(nCol);
     for(int i = 0; i < nRow; i++)
     {
         for(int j = 0; j < nCol; j++)
@@ -84,7 +90,7 @@ Matrix Matrix::transpose() const{
     return Matrix(mat);
 }
 
-Matrix Matrix::setNum(double num)
+Matrix Matrix::setNum(long double num)
 {
     for(int i = 0; i < nRow; i++)
     {
@@ -117,13 +123,13 @@ Vec Matrix::operator[](const int idx) const{
     return colVecArray[idx];
 }
 
-double& Matrix::operator[](const pair<int, int> idx)
+long double& Matrix::operator[](const pair<int, int> idx)
 {
     assert(idx.second >= 0 && idx.second < nCol && idx.first >= 0 && idx.first < nRow);
     return colVecArray[idx.second][idx.first];
 }
 
-double Matrix::operator[](const pair<int, int> idx) const
+long double Matrix::operator[](const pair<int, int> idx) const
 {
     assert(idx.second >= 0 && idx.second < nCol && idx.first >= 0 && idx.first < nRow);
     return colVecArray[idx.second][idx.first];
@@ -133,7 +139,7 @@ Vec Matrix::operator[](const pair<int, pair<int, int>> idx) const{
     int rowIdx = idx.first;
     auto colSlice = idx.second;
     assert(colSlice.second >= colSlice.first && colSlice.first >=0 && colSlice.second <= nCol);
-    vector<double> v;
+    vector<long double> v;
     for(int i = colSlice.first; i < colSlice.second; i++)
     {
         v.push_back((*this)[{rowIdx, i}]);
@@ -178,6 +184,30 @@ bool ReNLA::operator==(const Matrix& a, const Matrix& b)
     }
     return true;
 }
+
+Matrix Matrix::setSlice(const pair<pair<int, int>, pair<int, int>> slice, const Matrix& A)
+{
+    auto rowSlice = slice.first;
+    auto colSlice = slice.second;
+    assert(rowSlice.second >= rowSlice.first && rowSlice.first >=0 && rowSlice.second <= nRow);
+    assert(colSlice.second >= colSlice.first && colSlice.first >=0 && colSlice.second <= nCol);
+    assert( (colSlice.second - colSlice.first) == A.nCol);
+    assert( (rowSlice.second - rowSlice.first) == A.nRow);
+
+    auto rowStart = rowSlice.first;
+    auto rowEnd = rowSlice.second;
+    auto colStart = colSlice.first;
+    auto colEnd = colSlice.second;
+    for(int i = rowStart; i < rowEnd; i++)
+    {
+        for(int j = colStart; j < colEnd; j++)
+        {
+            (*this)[{i,j}] = A[{i - rowStart, j - colStart}];
+        }
+    }
+    return (*this);
+}
+
 Matrix ReNLA::operator+(const Matrix& a, const Matrix& b)
 {
     assert(a.nRow == b.nRow);
@@ -193,7 +223,7 @@ Matrix ReNLA::operator+(const Matrix& a, const Matrix& b)
     return m;
 }
 
-Matrix ReNLA::operator+(const Matrix& a, const double b)
+Matrix ReNLA::operator+(const Matrix& a, const long double b)
 {
     Matrix m = Matrix(a.nRow, a.nCol).setZero();
     for (int i = 0; i < a.nRow; i++)
@@ -206,7 +236,7 @@ Matrix ReNLA::operator+(const Matrix& a, const double b)
     return m;
 }
 
-Matrix ReNLA::operator+( const double b, const Matrix& a) {
+Matrix ReNLA::operator+( const long double b, const Matrix& a) {
     return a + b;
 }
 
@@ -215,7 +245,7 @@ Matrix ReNLA::operator-(const Matrix& a, const Matrix& b)
     return a + (-b);
 }
 
-Matrix ReNLA::operator-(const Matrix& a, const double b) {
+Matrix ReNLA::operator-(const Matrix& a, const long double b) {
     return a + (-b);
 }
 
@@ -238,7 +268,7 @@ Matrix ReNLA::matMul(const Matrix& a, const Matrix& b)
     return a * b;
 }
 
-Matrix ReNLA::operator*(const Matrix& a, const double b) {
+Matrix ReNLA::operator*(const Matrix& a, const long double b) {
     Matrix m = Matrix(a.nRow, a.nCol).setZero();
     for(int i = 0; i < m.nRow; i++)
     {
@@ -250,7 +280,7 @@ Matrix ReNLA::operator*(const Matrix& a, const double b) {
     return m;
 }
 
-Matrix ReNLA::operator*(const double b, const Matrix& a)
+Matrix ReNLA::operator*(const long double b, const Matrix& a)
 {
     return a * b;
 }
@@ -274,7 +304,7 @@ Vec ReNLA::operator*(const Matrix& a, const Vec& b) {
 //
 //}
 
-Matrix ReNLA::operator/(const Matrix& a, const double b) {
+Matrix ReNLA::operator/(const Matrix& a, const long double b) {
     assert(fabs(b - 0.0) > eps);
     Matrix m = Matrix(a.nRow, a.nCol).setZero();
     for(int i = 0; i < m.nRow; i++)
@@ -298,7 +328,7 @@ Matrix Matrix::operator-() const {
     }
     return m;
 }
-Matrix& Matrix::operator/=(const double b)
+Matrix& Matrix::operator/=(const long double b)
 {
     (*this) = (*this) / b;
     return (*this);
@@ -309,7 +339,7 @@ Matrix& Matrix::operator+=(const Matrix& a) {
     return (*this);
 }
 
-Matrix& Matrix::operator+=(const double a) {
+Matrix& Matrix::operator+=(const long double a) {
     (*this) = (*this) + a;
     return (*this);
 }
@@ -319,7 +349,7 @@ Matrix& Matrix::operator-=(const Matrix& a) {
     return (*this);
 }
 
-Matrix& Matrix::operator-=(const double a) {
+Matrix& Matrix::operator-=(const long double a) {
     (*this) = (*this) - a;
     return (*this);
 }
@@ -334,13 +364,13 @@ Matrix& Matrix::operator*=(const Matrix &b) {
 //    return v;
 //}
 
-Matrix& Matrix::operator*=(const double a)
+Matrix& Matrix::operator*=(const long double a)
 {
     (*this) = (*this) * a;
     return (*this);
 }
 
-Matrix Matrix::setTripleDiag(double lambda, double lambdaUp, double lambdaDown)
+Matrix Matrix::setTripleDiag(long double lambda, long double lambdaUp, long double lambdaDown)
 {
     assert(this->nRow == this->nCol);
     this->setZero();
@@ -394,23 +424,23 @@ Matrix Matrix::swapRow(int idx1, int idx2) {
     return (*this);
 }
 
-double Matrix::normInfin() const {
-    double maxN = 0.0;
+long double Matrix::normInfin() const {
+    long double maxN = 0.0;
     for(int i = 0; i < this->nRow; i++)
     {
         Vec r = (*this)[{i, {0, this->nCol}}];
-        double rN = r.norm1();
+        long double rN = r.norm1();
         if(rN > maxN)
             maxN = rN;
     }
     return maxN;
 }
 
-double Matrix::norm1() const {
+long double Matrix::norm1() const {
     // TODO
 }
 
-double Matrix::norm2() const {
+long double Matrix::norm2() const {
     // TODO
 }
 

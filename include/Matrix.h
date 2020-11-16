@@ -12,10 +12,11 @@ using namespace std;
 namespace ReNLA {
     class Matrix {
     public:
-        Matrix(vector<vector<double>> v, bool isColPrior=false);
+        Matrix(vector<vector<long double>> v, bool isColPrior=false);
         Matrix(vector<Vec>);
-        Matrix(vector<double>);
-        Matrix(int nRow, int nCol, double num);
+        Matrix(const Vec&);
+        Matrix(vector<long double>);
+        Matrix(int nRow, int nCol, long double num);
         Matrix(int nRow, int nCol); // Create a zero matrix
         Matrix(int nRow);
 
@@ -23,10 +24,10 @@ namespace ReNLA {
 
         Matrix transpose() const;
 
-        Matrix setNum(double num);
+        Matrix setNum(long double num);
         Matrix setIdentity();
         Matrix setZero();
-        Matrix setTripleDiag(double lambda, double lambdaUp, double lambdaDown);
+        Matrix setTripleDiag(long double lambda, long double lambdaUp, long double lambdaDown);
         Matrix setHilbert();
 
         // get entry of Matrix[col][row]
@@ -34,8 +35,8 @@ namespace ReNLA {
         Vec operator[](const int idx) const;
 
         // get entry of Matrix[{row, col}]
-        double& operator[](const pair<int, int>);
-        double operator[](const pair<int, int>) const;
+        long double& operator[](const pair<int, int>);
+        long double operator[](const pair<int, int>) const;
 
         // slice row vector
         Vec operator[](const pair<int, pair<int, int>>) const;
@@ -52,48 +53,47 @@ namespace ReNLA {
         friend bool operator== (const Matrix& a, const Matrix& b);
 
         friend Matrix operator+(const Matrix& a, const Matrix& b);
-        friend Matrix operator+(const Matrix& a, const double b);
-        friend Matrix operator+(const double b, const Matrix& a);
+        friend Matrix operator+(const Matrix& a, const long double b);
+        friend Matrix operator+(const long double b, const Matrix& a);
 
         friend Matrix operator-(const Matrix& a, const Matrix& b);
-        friend Matrix operator-(const Matrix& a, const double b);
+        friend Matrix operator-(const Matrix& a, const long double b);
 
         friend Matrix operator* (const Matrix& a, const Matrix& b);
         friend Matrix matMul(const Matrix& a, const Matrix& b);
 
         friend Vec operator* (const Matrix& a, const Vec& v);
         //TODO:  friend Vec operator* (const Vec& v, const Matrix& a);
-        friend Matrix operator*(const Matrix& a, const double b);
-        friend Matrix operator*(const double b, const Matrix& a);
+        friend Matrix operator*(const Matrix& a, const long double b);
+        friend Matrix operator*(const long double b, const Matrix& a);
 
-        friend Matrix operator/(const Matrix& a, const double b);
+        friend Matrix operator/(const Matrix& a, const long double b);
 
         Matrix operator-() const;
         Matrix& operator+=(const Matrix &);
-        Matrix& operator+=(const double);
+        Matrix& operator+=(const long double);
 
         Matrix& operator-=(const Matrix &);
-        Matrix& operator-=(const double);
+        Matrix& operator-=(const long double);
 
         // Matrix multiplication
         Matrix& operator*=(const Matrix& b);
-        Matrix& operator*=(const double);
+        Matrix& operator*=(const long double);
         //TODO: Vec operator*=(const Vec& b);
 
-        Matrix& operator/= (const double);
+        Matrix& operator/= (const long double);
 
         Matrix& elementwiseMul(Matrix &b);
 
         Matrix swapRow(int idx1, int idx2);
 
-        double normInfin() const;
-        double norm1() const;
-        double norm2() const;
+        long double normInfin() const;
+        long double norm1() const;
+        long double norm2() const;
 
     protected:
         vector<Vec> colVecArray;
         int nRow, nCol;
     };
-
 }
 #endif //CODES_MATRIX_H

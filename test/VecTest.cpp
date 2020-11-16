@@ -84,7 +84,7 @@ namespace {
         EXPECT_EQ(y.normInfin(), 400000);
         EXPECT_EQ(x.norm1(), 15);
         EXPECT_EQ(x.dot(x), 25.0 + 1.0 + 4.0 + 9.0 + 16.0 );
-        EXPECT_EQ(x.norm2(), sqrt(25.0 + 1.0 + 4.0 + 9.0 + 16.0));
+        EXPECT_LE((x.norm2()- sqrt(25.0 + 1.0 + 4.0 + 9.0 + 16.0)), 1e-10);
     }
 }
 

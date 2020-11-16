@@ -9,17 +9,17 @@
 #include <random>
 using namespace ReNLA;
 
-Vec::Vec(vector<double>v) : data{std::move(v)}
+Vec::Vec(vector<long double>v) : data{std::move(v)}
 {}
 
 Vec::Vec(int n)
 {
-    data = vector<double>(n, 0.0);
+    data = vector<long double>(n, 0.0);
 }
 
-//Vec::Vec(int n, double num)
+//Vec::Vec(int n, long double num)
 //{
-//    data = vector<double>(n, num);
+//    data = vector<long double>(n, num);
 //}
 
 Vec Vec::setOneHot(int idx) {
@@ -36,7 +36,7 @@ Vec Vec::setOne() {
     return (*this).setNum(1.0);
 }
 
-Vec Vec::setNum(const double num) {
+Vec Vec::setNum(const long double num) {
     for(int i = 0; i < (*this).size(); i++)
     {
         (*this)[i] = num;
@@ -52,9 +52,9 @@ Vec Vec::setIncremental()  {
     return (*this);
 }
 
-Vec Vec::setRandom(const double min, const double max) {
+Vec Vec::setRandom(const long double min, const long double max) {
     assert(max > min);
-    std::uniform_real_distribution<double> distribution(min, max);
+    std::uniform_real_distribution<long double> distribution(min, max);
     std::mt19937 generator;
     for(int i =0 ; i < this->size(); i++)
         (*this)[i] = distribution(generator);
@@ -66,10 +66,10 @@ int Vec::size() const
     return data.size();
 }
 
-double Vec::operator[](const int idx) const {
+long double Vec::operator[](const int idx) const {
     return this->data[idx];
 }
-double& Vec::operator[](const int idx) {
+long double& Vec::operator[](const int idx) {
     return this->data[idx];
 }
 
@@ -88,7 +88,7 @@ Vec Vec::setSlice(int begin, int end, Vec v)
     {
         (*this)[i] = v[i-begin];
     }
-    return v;
+    return (*this);
 }
 
 Vec Vec::getSlice(int begin, int end)
@@ -105,7 +105,7 @@ Vec Vec::addToSlice(int begin, int end, Vec v) {
     return (*this)[{begin, end}];
 }
 
-Vec Vec::mulToSlice(int begin, int end, double a) {
+Vec Vec::mulToSlice(int begin, int end, long double a) {
     for(int i = begin; i < end; i++)
     {
         (*this)[i] *= a;
@@ -128,7 +128,7 @@ ostream& ReNLA::operator<<(ostream& os, const Vec& x)
 Vec ReNLA::operator+(const Vec& a, const Vec &b)
 {
     assert(a.size() == b.size());
-    vector<double> v(a.size());
+    vector<long double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = a[i] + b[i];
@@ -136,9 +136,9 @@ Vec ReNLA::operator+(const Vec& a, const Vec &b)
     return Vec(v);
 }
 
-Vec ReNLA::operator+(const Vec& a, const double t)
+Vec ReNLA::operator+(const Vec& a, const long double t)
 {
-    vector<double> v(a.size());
+    vector<long double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = a[i] + t;
@@ -146,7 +146,7 @@ Vec ReNLA::operator+(const Vec& a, const double t)
     return Vec(v);
 }
 
-Vec ReNLA::operator+(const double t, const Vec& a)
+Vec ReNLA::operator+(const long double t, const Vec& a)
 {
     return a + t;
 }
@@ -154,7 +154,7 @@ Vec ReNLA::operator+(const double t, const Vec& a)
 Vec ReNLA::operator-(const Vec& a, const Vec &b)
 {
     assert(a.size() == b.size());
-    vector<double> v(a.size());
+    vector<long double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = a[i] - b[i];
@@ -162,9 +162,9 @@ Vec ReNLA::operator-(const Vec& a, const Vec &b)
     return Vec(v);
 }
 
-Vec ReNLA::operator-(const Vec& a, const double t)
+Vec ReNLA::operator-(const Vec& a, const long double t)
 {
-    vector<double> v(a.size());
+    vector<long double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = a[i] - t;
@@ -172,14 +172,14 @@ Vec ReNLA::operator-(const Vec& a, const double t)
     return Vec(v);
 }
 
-Vec ReNLA::operator-(const double t, const Vec& a)
+Vec ReNLA::operator-(const long double t, const Vec& a)
 {
     return a - t;
 }
 
-Vec ReNLA::operator* (const Vec& a, const double t)
+Vec ReNLA::operator* (const Vec& a, const long double t)
 {
-    vector<double> v(a.size());
+    vector<long double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = a[i] * t;
@@ -187,14 +187,14 @@ Vec ReNLA::operator* (const Vec& a, const double t)
     return Vec(v);
 }
 
-Vec ReNLA::operator* (const double t, const Vec& a)
+Vec ReNLA::operator* (const long double t, const Vec& a)
 {
     return  a * t;
 }
-Vec ReNLA::operator/ (const Vec& a, const double t)
+Vec ReNLA::operator/ (const Vec& a, const long double t)
 {
     assert(fabs(t - 0.0) > eps);
-    vector<double> v(a.size());
+    vector<long double> v(a.size());
     for(int i =0; i < v.size(); i++)
     {
         v[i] = a[i] / t;
@@ -217,7 +217,7 @@ bool ReNLA::operator==(const Vec &a, const Vec &b)
 }
 
 Vec Vec::operator-() const{
-    vector<double> v(this->size());
+    vector<long double> v(this->size());
     for(int i = 0; i < this->size(); i++)
     {
         v[i] = -(*this)[i];
@@ -235,7 +235,7 @@ Vec& Vec::operator+=(const Vec& b)
     return *this;
 }
 
-Vec& Vec::operator+=(const double t)
+Vec& Vec::operator+=(const long double t)
 {
     for(int i =0; i <  (*this).size(); i++)
     {
@@ -250,7 +250,7 @@ Vec& Vec::operator-=(const Vec& b)
 }
 
 
-Vec& Vec::operator-=(const double t)
+Vec& Vec::operator-=(const long double t)
 {
     for(int i =0; i <  (*this).size(); i++)
     {
@@ -259,7 +259,7 @@ Vec& Vec::operator-=(const double t)
     return *this;
 }
 
-Vec& Vec::operator*=(const double t)
+Vec& Vec::operator*=(const long double t)
 {
     for(int i =0; i <  (*this).size(); i++)
     {
@@ -268,7 +268,7 @@ Vec& Vec::operator*=(const double t)
     return *this;
 }
 
-Vec& Vec::operator/=(const double t)
+Vec& Vec::operator/=(const long double t)
 {
     assert(fabs(t - 0.0) > eps);
     for(int i =0; i <  (*this).size(); i++)
@@ -282,7 +282,7 @@ int Vec::maxAbsIdx(int begin, int end) const
 {
     assert(begin >=0 && end >= begin && end <= (*this).size());
     int idx = begin;
-    double max = fabs((*this)[begin]);
+    long double max = fabs((*this)[begin]);
     for(int i = begin + 1; i < end; i++)
     {
         auto t = fabs((*this)[i]);
@@ -313,17 +313,17 @@ Vec Vec::swap(int idx1, int idx2)
 {
     assert(idx1 >=0 && idx1 < (*this).size() && idx2 >=0 && idx2 <(*this).size());
     if(idx1 != idx2) {
-        double temp = (*this)[idx1];
+        long double temp = (*this)[idx1];
         (*this)[idx1] = (*this)[idx2];
         (*this)[idx2] = temp;
     }
     return (*this);
 }
 
-double Vec::dot(const Vec& b) const
+long double Vec::dot(const Vec& b) const
 {
     assert((*this).size() == b.size());
-    double dot = 0.0;
+    long double dot = 0.0;
     for(int i = 0; i < b.size(); i++)
     {
         dot += (*this)[i] * b[i];
@@ -331,15 +331,15 @@ double Vec::dot(const Vec& b) const
     return dot;
 }
 
-double Vec::dist2(const Vec &b) const {
+long double Vec::dist2(const Vec &b) const {
     return (*this - b).dot(*this - b);
 }
 
-double Vec::dist2(const Vec &a, const Vec &b) {
+long double Vec::dist2(const Vec &a, const Vec &b) {
     return a.dist2(b);
 }
 
-double Vec::length() const {
+long double Vec::length() const {
     return sqrt((*this).dot(*this));
 }
 
@@ -353,13 +353,13 @@ Vec Vec::getSign() const
     return signV;
 }
 
-double Vec::absMax() const {
+long double Vec::absMax() const {
     int idx = (*this).maxAbsIdx(0, this->size());
     return fabs((*this)[idx]);
 }
 
-double Vec::norm1() const{
-    double n1 = 0.0;
+long double Vec::norm1() const{
+    long double n1 = 0.0;
     for(int i = 0; i < (*this).size(); i++)
     {
         n1 += fabs((*this)[i]);
@@ -367,10 +367,14 @@ double Vec::norm1() const{
     return n1;
 }
 
-double Vec::normInfin() const {
+long double Vec::normInfin() const {
     return (*this).absMax();
 }
 
-double Vec::norm2() const {
+long double Vec::norm2() const {
     return this->length();
+}
+
+Vec& Vec::normalize() {
+    return (*this) /= (*this).norm2();
 }
