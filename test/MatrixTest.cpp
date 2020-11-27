@@ -104,4 +104,29 @@ namespace {
         auto m = Matrix(3, 3).setTripleDiag(-1, 1, -5);
         EXPECT_EQ(m.normInfin(), 7);
     }
+
+    TEST(MatrixTest, inv)
+    {
+        Matrix A({{1, 0,0},
+                     {2,3,0},
+                     {4,5,6}});
+
+        auto Ainv = A.lowTriangleInv();
+        EXPECT_EQ(Ainv * A, Matrix(3,3).setIdentity());
+    }
+
+    TEST(MatrixTest, diag_L_U)
+    {
+        Matrix A({{1,2,3},
+                     {4,5,6},
+                     {7,8,9}});
+        auto Adiag = Matrix(3).setDiagValue(A.getDiagValue());
+        EXPECT_EQ(Adiag, Matrix({{1,0,0},{0,5,0},{0,0,9}}));
+        EXPECT_EQ(A.getLowTriangle(), Matrix({{0,0,0},
+                                                        {4,0,0},
+                                                        {7,8,0}}));
+        EXPECT_EQ(A.getUpTriangle(), Matrix({{0,2,3},
+                                                        {0,0,6},
+                                                        {0,0,0}}));
+    }
 }

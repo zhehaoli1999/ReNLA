@@ -7,5 +7,8 @@ using namespace ReNLA;
 
 namespace
 {
+    TEST(Cholesky, construct)
+    {
 
+    }
 }
