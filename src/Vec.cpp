@@ -9,6 +9,10 @@
 #include <random>
 using namespace ReNLA;
 
+Vec::Vec() : data{0}
+{
+
+}
 Vec::Vec(vector<long double>v) : data{std::move(v)}
 {}
 

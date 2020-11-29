@@ -12,6 +12,7 @@ using namespace std;
 namespace ReNLA {
     class Vec {
     public:
+        Vec();
         Vec(vector<long double>);
         Vec(int n);
 
