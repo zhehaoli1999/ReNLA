@@ -9,7 +9,7 @@ using namespace ReNLA;
 
 pair<Vec, int> IterativeSolver::commonIterSolve(const Matrix &IterM, const Vec& IterG, const Vec& xInit) {
     int step = 0;
-    const int printStepInterval  = 10;
+    const int printStepInterval  = 1000;
     auto x = xInit;
     auto x0 = x;
     cout << "[Iteration starts]" << endl;
@@ -17,10 +17,10 @@ pair<Vec, int> IterativeSolver::commonIterSolve(const Matrix &IterM, const Vec& 
         step += 1;
         x0 = x;
         x = IterM * x0 + IterG;
-        if (step % printStepInterval == 0) {
-            cout << "step: " << step << " Delta(x): ";
-            cout << (x - x0).normInfin() << endl;
-        }
+//        if (step % printStepInterval == 0) {
+//            cout << "step: " << step << " Delta(x): ";
+//            cout << (x - x0).normInfin() << endl;
+//        }
     }while( (x - x0).normInfin() >= 1e-7 );
 
     return {x, step};
@@ -49,16 +49,7 @@ pair<Vec, int> IterativeSolver::JacobiIterSolve(const Matrix &A, const Vec &b) {
 }
 
 pair<Vec, int> IterativeSolver::GaussSeidelIterSolve(const Matrix &A, const Vec &b) {
-    auto D = Matrix(A.rowNum()).setDiagValue(A.getDiagValue());
-    auto L = - A.getLowTriangle();
-    auto U = - A.getUpTriangle();
-
-    auto inv = (D-L).lowTriangleInv(); // This is costly!
-
-    auto L1 = inv * U;
-    auto g = inv * b;
-
-    return commonIterSolve(L1, g, Vec(b.size()).setNum(0.0));
+    return SORIterSolve(A, b, 1.0);
 }
 
 pair<Vec, int> IterativeSolver::SORIterSolve(const Matrix &A, const Vec &b, double w) {
@@ -78,7 +69,7 @@ pair<Vec, int> IterativeSolver::sparseJacobiIterSolve(const CRSMatrix &A, const 
     assert(A.colNum() == A.rowNum() && A.rowNum() == n);
 
     int step = 0;
-    const int printStepInterval  = 100;
+    const int printStepInterval  = 1000;
 
     auto x = Vec(n);
     auto x0 = x;
@@ -112,14 +103,65 @@ pair<Vec, int> IterativeSolver::sparseJacobiIterSolve(const CRSMatrix &A, const 
         }
         //////////////
 
-        if (step % printStepInterval == 0) {
-            cout << "step: " << step << " Delta(x): ";
-            cout << (x - x0).normInfin() << endl;
-        }
+//        if (step % printStepInterval == 0) {
+//            cout << "step: " << step << " Delta(x): ";
+//            cout << (x - x0).normInfin() << endl;
+//        }
     }while( (x - x0).normInfin() >= 1e-7 );
 
     return {x, step};
 }
-pair<Vec, int> IterativeSolver::sparseGSIterSolve(const CRSMatrix &A, const Vec &b) {}
+
+pair<Vec, int> IterativeSolver::sparseGSIterSolve(const CRSMatrix &A, const Vec &b) {
+    return sparseSORIterSolve(A, b, 1.0);
+}
+
+pair<Vec, int> IterativeSolver::sparseSORIterSolve(const CRSMatrix &A, const Vec &b, double w) {
+    int n = b.size();
+    assert(A.colNum() == A.rowNum() && A.rowNum() == n);
+
+    int step = 0;
+    const int printStepInterval  = 1000;
+
+    auto x = Vec(n);
+    auto x0 = x;
+    cout << "[Iteration starts]" << endl;
+    do {
+        step += 1;
+        x0 = x;
+
+        auto rowFirstEntryIdx = A.getRowFirstEntryIdx();
+        auto colIdx = A.getColIdx();
+        auto values = A.getValues();
+
+        ///////// SOR iteration
+        auto it = rowFirstEntryIdx.begin();
+        for(int i =0; i < n; i++, it++)
+        {
+            long double sigma = 0;
+            long double aii = 0;
+            for(int j = *it; j < *(it+1); j++)
+            {
+                int colIndex = colIdx[j];
+                long double a = values[j];
+                if(colIndex != i)
+                    sigma += a * x[colIndex]; // Here different with Jacobi
+                else {
+                    aii = a;
+                    assert(aii != 0.0);
+                }
+            }
+            x[i] = x[i] + w*(1 / aii * ( b[i] - sigma) - x[i]);
+        }
+        //////////////
+
+//        if (step % printStepInterval == 0) {
+//            cout << "step: " << step << " Delta(x): ";
+//            cout << (x - x0).normInfin() << endl;
+//        }
+    }while( (x - x0).normInfin() >= 1e-7 );
+
+    return {x, step};
+}
 
 

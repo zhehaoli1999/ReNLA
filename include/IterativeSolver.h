@@ -24,7 +24,7 @@ namespace ReNLA{
 
         static pair<Vec, int> sparseGSIterSolve(const CRSMatrix& A, const Vec& b);
 
-        static pair<Vec, int> sparseSORIterSolve(const CRSMatrix& A, const Vec& b);
+        static pair<Vec, int> sparseSORIterSolve(const CRSMatrix& A, const Vec& b, double w= 1.1);
 
     };
 }

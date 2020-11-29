@@ -21,34 +21,58 @@ void solve(const Matrix& A, const Vec& b, const Vec& y=Vec(0))
     if(y.size() > 0)
         cout << "[err]: " << (y - result.first).norm2()<< endl;
 
+    cout << "========== G-S Iter ==========" << endl;
+    result = IterativeSolver::GaussSeidelIterSolve(A, b);
+    cout << "[total step]: " << result.second << endl;
+    cout << "[x]: " << result.first;
+    if(y.size() > 0)
+        cout << "[err]: " << (y - result.first).norm2() << endl;
 
-//    cout << "========== G-S Iter ==========" << endl;
-//    result = IterativeSolver::GaussSeidelIterSolve(A, b);
-//    cout << "[total step]: " << result.second << endl;
-//    cout << "[x]: " << result.first;
-//    if(y.size() > 0)
-//        cout << "[err]: " << (y - result.first).norm2() << endl;
-//
-//    cout << "========== SOR Iter ==========" << endl;
-//    result = IterativeSolver::SORIterSolve(A, b);
-//    cout << "[total step]: " << result.second << endl;
-//    cout << "[x]: " << result.first;
-//    if(y.size() > 0)
-//        cout << "[err]: " << (y - result.first).norm2()<< endl;
+    double w = 1.17;
+    cout << "========== SOR Iter ( w = "<< w << " ) ==========" << endl;
+    result = IterativeSolver::SORIterSolve(A, b, w);
+    cout << "[total step]: " << result.second << endl;
+    cout << "[x]: " << result.first;
+    if(y.size() > 0)
+        cout << "[err]: " << (y - result.first).norm2()<< endl;
 }
 
 void sparseSolve(const CRSMatrix& A, const Vec& b, const Vec& y=Vec(0))
 {
     cout << "========== Sparse Jacobi Iter ==========" << endl;
+    Timer t1("Sparse Jacobi");
+    t1.start();
     auto result = IterativeSolver::sparseJacobiIterSolve(A, b);
+    t1.end();
     cout << "[total step]: " << result.second << endl;
     cout << "[x]: " << result.first;
     if(y.size() > 0)
         cout << "[err]: " << (y - result.first).norm2()<< endl;
 
+    cout << "========== Sparse G-S Iter ==========" << endl;
+    Timer t2("Sparse G-S");
+    t2.start();
+    result = IterativeSolver::sparseGSIterSolve(A, b);
+    t2.end();
+    cout << "[total step]: " << result.second << endl;
+    cout << "[x]: " << result.first;
+    if(y.size() > 0)
+        cout << "[err]: " << (y - result.first).norm2() << endl;
+
+    double w = 1.96;
+    cout << "========== Sparse SOR Iter (w = " << w << " ) ==========" << endl;
+    Timer t3("Sparse SOR");
+    t3.start();
+    result = IterativeSolver::sparseSORIterSolve(A, b, w);
+    t3.end();
+    cout << "[total step]: " << result.second << endl;
+    cout << "[x]: " << result.first;
+    if(y.size() > 0)
+        cout << "[err]: " << (y - result.first).norm2()<< endl;
 }
 
 void hw4_1(double epsi=1.0) {
+    cout << "======= HW 4.1 (epsilon = " << epsi << " ) ======= " << endl;
     double a = 0.5;
     double n = 100.0;
     auto h = 1.0 / n;
@@ -113,6 +137,7 @@ void hw4_2(int N=20)
 
 void hw4_2_sparse(int N=20)
 {
+    cout << "======= HW 4.2 (N = " << N << " ) ======= " << endl;
     double h = 1.0 / N;
     auto g = [](double x, double y){return exp(x * y); };
     auto f = [](double x, double y){return x+y; };
@@ -180,11 +205,14 @@ void hw4_2_sparse(int N=20)
 }
 
 int main() {
-//    hw4_1(1.0);
-//    hw4_1(0.1);
-//    hw4_1(0.01);
-//    hw4_1(0.0001);
+    hw4_1(1.0);
+    hw4_1(0.1);
+    hw4_1(0.01);
+    hw4_1(0.0001);
 
-//    hw4_2(20);
+    cout << endl; 
+
+    hw4_2_sparse(20);
+    hw4_2_sparse(40);
     hw4_2_sparse(80);
 }
