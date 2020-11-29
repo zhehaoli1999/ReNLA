@@ -5,6 +5,6 @@
 #ifndef CODES_CONSTVALUES_H
 #define CODES_CONSTVALUES_H
 
-constexpr double eps = 1e-35;
+constexpr double eps = 1e-20;
 
 #endif //CODES_CONSTVALUES_H

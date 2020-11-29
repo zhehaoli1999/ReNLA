@@ -10,11 +10,14 @@
 namespace ReNLA{
     class IterativeSolver
     {
-        static Vec JacobiIterSolve(const Matrix& A, const Vec& b);
+    public:
+        static pair<Vec, int> JacobiIterSolve(const Matrix& A, const Vec& b);
 
-        static Vec GaussSeidelIterSolve(const Matrix& A, const Vec& b);
+        static pair<Vec, int> GaussSeidelIterSolve(const Matrix& A, const Vec& b);
 
-        static Vec SORIterSolve(const Matrix& A, const Vec& b);
+        static pair<Vec, int> SORIterSolve(const Matrix& A, const Vec& b, double w=1.17);
+
+        static pair<Vec, int> commonIterSolve(const Matrix& IterM,  const Vec& IterG, const Vec& xInit);
     };
 }
 

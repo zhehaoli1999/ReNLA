@@ -113,6 +113,12 @@ namespace {
 
         auto Ainv = A.lowTriangleInv();
         EXPECT_EQ(Ainv * A, Matrix(3,3).setIdentity());
+
+        Matrix B({{1, 0,0},
+                  {0,3,0},
+                  {0,0,6}});
+        cout << B.lowTriangleInv();
+        EXPECT_EQ(B.lowTriangleInv(), Matrix(3).setDiagValue({1, 1.0 /3.0, 1.0 / 6.0}));
     }
 
     TEST(MatrixTest, diag_L_U)
