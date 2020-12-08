@@ -37,7 +37,7 @@ void solve(const Matrix& A, const Vec& b, const Vec& y=Vec(0))
         cout << "[err]: " << (y - result.first).norm2()<< endl;
 }
 
-void sparseSolve(const CRSMatrix& A, const Vec& b, const Vec& y=Vec(0))
+void sparseSolve(const CSRMatrix& A, const Vec& b, const Vec& y=Vec(0))
 {
     cout << "========== Sparse Jacobi Iter ==========" << endl;
     Timer t1("Sparse Jacobi");
@@ -201,7 +201,7 @@ void hw4_2_sparse(int N=20)
         }
     }
 
-    sparseSolve(CRSMatrix(size, size, rowIdx, colIdx, values), b);
+    sparseSolve(CSRMatrix(size, size, rowIdx, colIdx, values), b);
 }
 
 int main() {

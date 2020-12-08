@@ -19,8 +19,23 @@ namespace {
         vector<int> rowIdx({0,0,0,1,1,2,2,2,3,3,3,3,4,4,5});
         vector<int> colIdx({0,3,5,0,1,1,2,5,0,3,4,5,1,4,5});
         vector<long double> values({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15});
-        auto crsM = CRSMatrix(6, 6, rowIdx, colIdx, values).toDense();
-        cout << crsM;
-        EXPECT_EQ(crsM, M);
+        auto csrM = CSRMatrix(6, 6, rowIdx, colIdx, values).toDense();
+//        cout << csrM;
+        EXPECT_EQ(csrM, M);
+    }
+    TEST(CRSMatrix, multiply)
+    {
+        vector<int> rowIdx({0,0,0,1,1,2,2,2,3,3,3,3,4,4,5});
+        vector<int> colIdx({0,3,5,0,1,1,2,5,0,3,4,5,1,4,5});
+        vector<long double> values({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15});
+        auto csrM = CSRMatrix(6, 6, rowIdx, colIdx, values);
+        auto v = Vec(6).setOne();
+        auto result = csrM * v;
+
+        cout << result;
+
+        auto ans = Vec({6, 9, 21, 42, 27, 15});
+        EXPECT_EQ(result, ans);
+
     }
 }

@@ -9,15 +9,20 @@
 
 namespace ReNLA {
 
-    class CRSMatrix {
+    class CSRMatrix {
     public:
         // Construct a CRS matrix from CSS.
-        // **Require rowIdx and colIdx to be sorted!**
-        CRSMatrix(int nRow, int nCol, const vector<int>& rowIdx, const vector<int>& colIdx, const vector<long double>& values);
+        // **Require rowIdx to be sorted!**
+        CSRMatrix(int nRow, int nCol, const vector<int>& rowIdx, const vector<int>& colIdx, const vector<long double>& values);
         Matrix toDense() const;
         vector<int> getRowFirstEntryIdx() const;
         vector<int> getColIdx() const;
         vector<long double> getValues() const;
+
+        long double &operator[](const pair<int, int>);
+        long double operator[](const pair<int, int>) const;
+
+        friend Vec operator*(const CSRMatrix &a, const Vec &v);
 
         int rowNum() const;
         int colNum() const;

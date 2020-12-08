@@ -6,7 +6,7 @@
 
 using namespace ReNLA;
 
-CRSMatrix::CRSMatrix(int nRow, int nCol, const vector<int> &rowIdx, const vector<int> &colIdx, const vector<long double> &values) {
+CSRMatrix::CSRMatrix(int nRow, int nCol, const vector<int> &rowIdx, const vector<int> &colIdx, const vector<long double> &values) {
     this->nRow = nRow;
     this->nCol = nCol;
 
@@ -30,34 +30,34 @@ CRSMatrix::CRSMatrix(int nRow, int nCol, const vector<int> &rowIdx, const vector
     this->rowFirstEntryIdx.push_back(n);
 }
 
-int CRSMatrix::rowNum() const {
+int CSRMatrix::rowNum() const {
     return this->nRow;
 }
 
-int CRSMatrix::colNum() const {
+int CSRMatrix::colNum() const {
     return this->nCol;
 }
 
-vector<long double> CRSMatrix::getValues() const{
+vector<long double> CSRMatrix::getValues() const{
     return this->values;
 }
 
-vector<int> CRSMatrix::getColIdx() const{
+vector<int> CSRMatrix::getColIdx() const{
     return this->colIdx;
 }
 
-vector<int> CRSMatrix::getRowFirstEntryIdx() const{
+vector<int> CSRMatrix::getRowFirstEntryIdx() const{
     return this->rowFirstEntryIdx;
 }
 
-Matrix CRSMatrix::toDense() const
+Matrix CSRMatrix::toDense() const
 {
     auto M = Matrix(nRow, nCol);
 
     int row = 0;
-    for(auto it= this->rowFirstEntryIdx.begin(); it!=this->rowFirstEntryIdx.end(); it++)
+    for(auto it= this->rowFirstEntryIdx.begin(); it!=this->rowFirstEntryIdx.end()-1; it++)
     {
-        //TODO: Require that no row is a zero row
+        //TODO: Require no row is a zero row!
         for(int j = *it; j < *(it+1); j++)
         {
             int colIndex = this->colIdx[j];
@@ -66,4 +66,32 @@ Matrix CRSMatrix::toDense() const
         row ++;
     }
     return M;
+}
+
+Vec ReNLA::operator*(const CSRMatrix& A, const Vec& v)
+{
+    assert(A.colNum() == v.size());
+    auto result = Vec(v.size());
+
+    //TODO: Require no row is a zero row!
+    int row = 0;
+    auto rowFirstEntryIdx = A.getRowFirstEntryIdx();
+    auto Avalues = A.getValues();
+    auto colIdx = A.getColIdx();
+
+    for(auto it= rowFirstEntryIdx.begin(); it!= rowFirstEntryIdx.end()-1; it++)
+    {
+        long double sum = 0.0;
+        for(int j = *it; j < *(it+1); j++)
+        {
+            int colIndex = colIdx[j];
+            long double val = Avalues[j];
+            sum += val * v[colIndex];
+        }
+        if(row < result.size()) {
+            result[row] = sum;
+        }
+        row ++;
+    }
+    return result;
 }
