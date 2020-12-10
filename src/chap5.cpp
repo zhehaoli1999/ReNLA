@@ -10,13 +10,101 @@ using namespace std;
 
 void hw5_1()
 {
+    const int N = 20;
+    cout << "==== hw 5.1 (n = "<< N << ") ====" << endl;
+    const double h = 1.0 / N;
+    auto f = [](double x, double y){return sin(x*y);};
+    auto phi = [](double x, double y){return x*x + y*y; };
 
+    // Initialization
+    vector<int> rowIdx;
+    vector<int> colIdx;
+    vector<long double> values;
+    int size = (N-1) * (N-1);
+    auto b = Vec(size);
+
+    // Traverse all nodes in grid
+    for (int j = 0; j < N - 1; j++) // y axis
+    {
+        auto y = (j + 1) * h;
+        int baseIdx = j * (N-1);
+        for (int i = 0; i < N - 1; i++) // x axis
+        {
+            auto x = (i + 1) * h;
+            int idx = baseIdx + i;
+
+            b[idx] = h * h * f(x, y) / 4.0;
+
+            rowIdx.push_back(idx);
+            colIdx.push_back(idx);
+            values.push_back(1 + h * h / 4.0);
+
+            if (idx >= 1)
+            {
+                rowIdx.push_back(idx);
+                colIdx.push_back(idx-1);
+                values.push_back(-1.0 / 4.0);
+            }
+            else
+                b[idx] += phi(0.0, y) / 4.0;
+
+            if (idx <= (N - 1) * (N - 1) - 2)
+            {
+                rowIdx.push_back(idx);
+                colIdx.push_back(idx+1);
+                values.push_back(-1.0 / 4.0);
+            }
+            else
+                b[idx] += phi(1.0, y) / 4.0;
+
+            if (idx >= N)
+            {
+                rowIdx.push_back(idx);
+                colIdx.push_back(idx-N);
+                values.push_back(-1.0 / 4.0);
+            }
+            else
+                b[idx] += phi(x, 0.0) / 4.0;
+
+            if (idx <= (N - 1) * (N - 1) - 1 - N)
+            {
+                rowIdx.push_back(idx);
+                colIdx.push_back(idx+N);
+                values.push_back(-1.0 / 4.0);
+            }
+            else
+                b[idx] += phi(x, 1.0) / 4.0;
+        }
+    }
+
+    auto A = CSRMatrix(size, size, rowIdx, colIdx, values);
+
+    cout << "====== CG ======" << endl;
+    Timer t1("CG iteration");
+    t1.start();
+    auto result = IterativeSolver::sparseCGIterSolve(A, b);
+    t1.end();
+    auto x_CG = result.first;
+    auto step = result.second;
+    cout << "step: " << step << endl;
+    cout << x_CG;
+
+    cout << "===== SOR =====" << endl;
+    Timer t2("SOR iteration");
+    t2.start();
+    auto result_SOR = IterativeSolver::sparseSORIterSolve(A, b, 1.795);
+    t2.end();
+    auto x_SOR = result_SOR.first;
+    auto step_SOR = result_SOR.second;
+    cout << "step: " << step_SOR << endl;
+    cout << x_SOR;
 }
 
 void hw5_2()
 {
-    cout << "==== hw 5.2 ====";
     const int n = 80;
+    cout << "==== hw 5.2 (n = " << n <<") ====" << endl;
+
     Matrix A = Matrix(n).setHilbert();
     Vec b = 1.0/3.0 * A * Vec(n).setOne();
 
@@ -36,7 +124,7 @@ void hw5_2()
     auto result_GS = IterativeSolver::GaussSeidelIterSolve(A, b);
     t2.end();
     auto x_GS = result_GS.first;
-    auto step_GS = result.second;
+    auto step_GS = result_GS.second;
     cout << "step: " << step_GS << endl;
     cout << x_GS;
 
@@ -77,5 +165,7 @@ void hw5_3()
 
 int main()
 {
-    hw5_3();
+    hw5_1();
+//    hw5_2();
+//    hw5_3();
 }

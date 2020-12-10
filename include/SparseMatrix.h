@@ -9,7 +9,7 @@
 
 namespace ReNLA {
 
-    class CSRMatrix {
+    class CSRMatrix : Matrix{
     public:
         // Construct a CRS matrix from CSS.
         // **Require rowIdx to be sorted!**
@@ -24,8 +24,8 @@ namespace ReNLA {
 
         friend Vec operator*(const CSRMatrix &a, const Vec &v);
 
-        int rowNum() const;
-        int colNum() const;
+        int rowNum() const override;
+        int colNum() const override;
     private:
         int nRow;
         int nCol;

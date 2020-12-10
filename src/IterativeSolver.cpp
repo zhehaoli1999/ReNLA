@@ -65,7 +65,15 @@ pair<Vec, int> IterativeSolver::SORIterSolve(const Matrix &A, const Vec &b, doub
 }
 
 pair<Vec, int> IterativeSolver::CGIterSolve(const Matrix &A, const Vec &b) {
-    // TODO: use polymorphism to solve repetition
+    /* Conjugate Gradient iteration method
+     *
+     *  1. x_{k+1} = x_k + \alpha_k * p_k
+     *     \alpha_k = < r_k, r_k > / ( p_k^T A p_k )
+     *  2. r_{k+1} = b - A * x_{k+1}
+     *             = r_k - \alpha * A * p_k
+     *  3. p_{k+1} = r_{k+1} + \beta_k * p_k
+     *      \beta_k = - < r_{k+1}, r_{k+1} > / <r_k, r_k>
+     */
     auto x = Vec(b.size());
     int step = 0;
     auto r = b - A * x;

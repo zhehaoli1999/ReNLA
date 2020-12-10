@@ -6,7 +6,8 @@
 
 using namespace ReNLA;
 
-CSRMatrix::CSRMatrix(int nRow, int nCol, const vector<int> &rowIdx, const vector<int> &colIdx, const vector<long double> &values) {
+CSRMatrix::CSRMatrix(int nRow, int nCol, const vector<int> &rowIdx, const vector<int> &colIdx, const vector<long double> &values)
+    : Matrix(1){
     this->nRow = nRow;
     this->nCol = nCol;
 

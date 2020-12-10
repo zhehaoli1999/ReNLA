@@ -40,10 +40,10 @@ namespace ReNLA {
         vector<int> shape() const;
 
         // Return num of rows
-        int rowNum() const;
+        virtual int rowNum() const;
 
         // Return num of cols
-        int colNum() const;
+        virtual int colNum() const;
 
         Matrix transpose() const;
 
