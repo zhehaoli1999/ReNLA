@@ -43,8 +43,8 @@ namespace {
         auto resultPair = EigenSolver::upHessenberg(A);
         auto H = resultPair.first;
         auto Q = resultPair.second;
-        cout << resultPair.first;
-        cout << Q.transpose() * A * Q;
+//        cout << resultPair.first;
+//        cout << Q.transpose() * A * Q;
     }
 
     TEST(EigenSolverTest, upHessenberg2) {
@@ -58,8 +58,47 @@ namespace {
         auto resultPair = EigenSolver::upHessenberg(A);
         auto H = resultPair.first;
         auto Q = resultPair.second;
-        cout << resultPair.first;
-        cout << Q.transpose() * A * Q;
+//        cout << resultPair.first;
+//        cout << Q.transpose() * A * Q;
     }
 
+    /*
+    TEST(EigenSolverTest, FrancisQRiter)
+    {
+        auto A = Matrix({{1,2,3},
+                         {4,5,6},
+                         {7,8,9}});
+
+        auto resultPair = EigenSolver::upHessenberg(A);
+        auto H = resultPair.first;
+        cout << "H:" << endl;
+        cout << H;
+        auto FrancisPair = EigenSolver::FrancisQRiter(H);
+        cout << "H_offset:" << endl;
+        auto H_ = FrancisPair.first;
+        auto P = FrancisPair.second;
+        cout << H_ << endl;
+        cout << P.transpose() * H * P; // TODO
+    }
+    */
+    TEST(EigenSolverTest, FrancisQRiter2)
+    {
+        auto A = Matrix({{1.1908,  -1.0565, -2.1707, 0.5913,  0.0000,  0.7310},
+                         {-1.2025, 1.4151,  -0.0592, -0.6436, -0.3179, 0.5779},
+                         {-0.0198, -0.8051, -1.0106, 0.3803,  1.0950,  0.0403},
+                         {-0.1567, 0.5287,  0.6145,  -1.0091, -1.8740, 0.6771},
+                         {-1.6041, 0.2193,  0.5077,  -0.0195, 0.4282,  0.5689},
+                         {0.2573,  -0.9219, 1.6924,  -0.0482, 0.8956,  -0.2556}});
+
+        auto resultPair = EigenSolver::upHessenberg(A);
+        auto H = resultPair.first;
+        cout << "H:" << endl;
+        cout << H;
+        auto FrancisPair = EigenSolver::FrancisQRiter(H);
+        cout << "H_offset:" << endl;
+        auto H_ = FrancisPair.first;
+        auto P = FrancisPair.second;
+        cout << H_ << endl;
+        cout << P.transpose() * H * P; // TODO
+    }
 }

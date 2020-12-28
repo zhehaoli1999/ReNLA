@@ -26,6 +26,10 @@ namespace ReNLA {
         //@return: pair{H, Q}
         static pair<Matrix, Matrix> upHessenberg(Matrix A);
 
+        //@brief: subroutine of ImplicitQR. Do double-step offset to upHessenberg matrix.
+        //@return: pair{H_offseted, P}, to make H_offseted = P^T H P
+        static pair<Matrix, Matrix> FrancisQRiter(Matrix H);
+
     };
 }
 #endif //EIGENSOLVER_H

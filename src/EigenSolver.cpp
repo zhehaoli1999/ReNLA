@@ -3,6 +3,7 @@
 //
 #include "../include/EigenSolver.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace ReNLA;
 
@@ -69,4 +70,59 @@ pair<Matrix, Matrix> EigenSolver::upHessenberg(Matrix A)
     }
 
     return {A, Q};
+}
+
+pair<Matrix, Matrix> EigenSolver::FrancisQRiter(Matrix H) {
+    assert(H.rowNum() == H.colNum());
+    int N = H.rowNum();
+    int n = N -1;
+    int m = n - 1;
+
+    auto s = H[{m,m}] + H[{n, n}];
+    auto t = H[{m,m}]*H[{n,n}] - H[{m, n}] * H[{n,m}];
+    auto x = H[{0,0}]*H[{0,0}] + H[{0,1}]*H[{1,0}]
+            - s * H[{0,0}] + t;
+    auto y = H[{1,0}] * (H[{0,0}] + H[{1,1}] - s);
+    auto z = H[{1,0}] * H[{2,1}];
+
+    auto P = Matrix(N).setIdentity();
+
+    for(int k = -1; k <= N-4; k++)
+    {
+        auto v = householder(Vec({x, y, z}));
+        auto beta = v[0];
+        v[0] = 1;
+
+        auto q = max(0, k);
+        auto M = beta * Matrix(v) * Matrix(v).transpose();
+
+        // Record P_k
+        auto Msize = M.rowNum();
+        assert(Msize == 3);
+        auto P_k = Matrix(N).setIdentity()
+                    .setSlice({{k+1, k+4},{k+1, k+4}},
+                                Matrix(Msize).setIdentity() - M);
+        P = P * P_k;
+
+        H.addToSlice({{k+1, k+4}, {q, N}}, -M * H[{{k+1, k+4}, {q, N}}]);
+        auto r = min(k+4, N-1);
+        H.addToSlice({{0, r+1},{k+1, k+4}}, - H[{{0, r+1},{k+1, k+4}}] * M);
+        x = H[{k+2, k+1}];
+        y = H[{k+3, k+1}];
+        if(k < N-4)
+            z = H[{k+4, k+1}];
+    }
+
+    auto v = householder(Vec({x, y}));
+    auto beta = v[0];
+    v[0] = 1.0;
+    auto M = beta * Matrix(v) * Matrix(v).transpose();
+    H.addToSlice({{N-2, N}, {N-3, N}}, - M * H[{{N-2, N}, {N-3, N}}]);
+    H.addToSlice({{0,N}, {N-2, N}}, - H[{{0,N}, {N-2, N}}] * M);
+    auto P_k = Matrix(N).setIdentity()
+            .setSlice({{N-2, N},{N-2, N}},
+                      Matrix(2).setIdentity() - M);
+    P = P * P_k; // TODO
+
+    return {H, P};
 }
