@@ -94,11 +94,41 @@ namespace {
         auto H = resultPair.first;
         cout << "H:" << endl;
         cout << H;
-        auto FrancisPair = EigenSolver::FrancisQRiter(H);
+        auto FrancisPair = EigenSolver::FrancisQRIter(H);
         cout << "H_offset:" << endl;
         auto H_ = FrancisPair.first;
         auto P = FrancisPair.second;
         cout << H_ << endl;
-        cout << P.transpose() * H * P; // TODO
+        cout << P.transpose() * H * P;
+    }
+
+    /*
+    TEST(EigenSolverTest, implicitQRDecomposition)
+    {
+        auto A = Matrix({{1.1908,  -1.0565, -2.1707, 0.5913,  0.0000,  0.7310},
+                         {-1.2025, 1.4151,  -0.0592, -0.6436, -0.3179, 0.5779},
+                         {-0.0198, -0.8051, -1.0106, 0.3803,  1.0950,  0.0403},
+                         {-0.1567, 0.5287,  0.6145,  -1.0091, -1.8740, 0.6771},
+                         {-1.6041, 0.2193,  0.5077,  -0.0195, 0.4282,  0.5689},
+                         {0.2573,  -0.9219, 1.6924,  -0.0482, 0.8956,  -0.2556}});
+        auto resultPair = EigenSolver::ImplicitQRDecomposition(A);
+        auto H = resultPair.first;
+        cout << "H:" << endl;
+        cout << H;
+        auto Q = resultPair.second;
+        cout << Q.transpose() * A * Q;
+    }*/
+
+    TEST(EigenSolverTest, implicitQRconvergence)
+    {
+//        auto A = Matrix(5).setIdentity();
+//        EigenSolver::ImplicitQRConvergenceCheck(A, A);
+
+        auto A2 = Matrix({{1, 0, 0, 0, 0},
+                             {0, 1, 1, 1, 1},
+                             {0, 1, 1, 2, 3},
+                             {0, 0, 0, 2, 1},
+                             {0, 0, 0, 0, 3}});
+        EigenSolver::ImplicitQRConvergenceCheck(A2, A2);
     }
 }

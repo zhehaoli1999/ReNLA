@@ -20,7 +20,9 @@ namespace ReNLA {
         //@return: Matrix
         static Matrix getFriendMatrixFromPolynomial(const Vec efficients);
 
-        static pair<long double, Vec> ImplicitQR(Matrix A);
+        //@brief: Do implicit QR on A (Real Schur Decomposition): Q^T A Q = U
+        //@return: pair{U, Q} where Q^T A Q = U
+        static pair<Matrix, Matrix> ImplicitQRDecomposition(Matrix A);
 
         //@brief: do upHessenberg to A: H = Q^T A Q
         //@return: pair{H, Q}
@@ -28,7 +30,11 @@ namespace ReNLA {
 
         //@brief: subroutine of ImplicitQR. Do double-step offset to upHessenberg matrix.
         //@return: pair{H_offseted, P}, to make H_offseted = P^T H P
-        static pair<Matrix, Matrix> FrancisQRiter(Matrix H);
+        static pair<Matrix, Matrix> FrancisQRIter(Matrix H);
+
+        //@brief: subroutine of ImplicitQR
+        //@return: pair{U, Q} where Q^T A Q = U
+        static bool ImplicitQRConvergenceCheck(Matrix& H, Matrix& Q);
 
     };
 }

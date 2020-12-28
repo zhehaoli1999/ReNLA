@@ -4,6 +4,7 @@
 #include "../include/EigenSolver.h"
 #include <cmath>
 #include <algorithm>
+#include <utility>
 
 using namespace ReNLA;
 
@@ -72,7 +73,7 @@ pair<Matrix, Matrix> EigenSolver::upHessenberg(Matrix A)
     return {A, Q};
 }
 
-pair<Matrix, Matrix> EigenSolver::FrancisQRiter(Matrix H) {
+pair<Matrix, Matrix> EigenSolver::FrancisQRIter(Matrix H) {
     assert(H.rowNum() == H.colNum());
     int N = H.rowNum();
     int n = N -1;
@@ -125,4 +126,111 @@ pair<Matrix, Matrix> EigenSolver::FrancisQRiter(Matrix H) {
     P = P * P_k; // TODO
 
     return {H, P};
+}
+
+pair<Matrix, Matrix> EigenSolver::ImplicitQRDecomposition(Matrix A) {
+    assert(A.colNum() == A.rowNum());
+
+    // 1. upHessenberg
+    auto upHessenbergPair = EigenSolver::upHessenberg(std::move(A));
+    auto H = upHessenbergPair.first;
+    auto Q = upHessenbergPair.second;
+
+    // 2. Check convergence
+    while(true) {
+        if (EigenSolver::ImplicitQRConvergenceCheck(H, Q))
+            break;
+    }
+    return {H, Q};
+
+}
+
+bool EigenSolver::ImplicitQRConvergenceCheck(Matrix &H, Matrix &Q) {
+    const int n = H.rowNum();
+    using Slice = pair<pair<int, int>, pair<int, int>>;
+    const auto u = 1e-10; // prescribed machine precision
+
+    for (int i = 1; i < n; i++) {
+        if (fabs(H[{i, i - 1}]) <= (fabs(H[{i, i}]) + fabs(H[{i - 1, i - 1}])) * u) {
+            H[{i, i - 1}] = 0.0;
+        }
+    }
+    int m = 0;
+    for (int i = n - 1; i >= 1; i--) {
+        // sub-diag entry is 0
+        if (fabs(H[{i, i - 1}] - 0.0) < u) {
+            m++;
+            if(i == 1)
+            {
+                m++;
+            }
+        }
+        else // sub-diag entry is not 0
+        {
+            //  x  x  x  (x --> not 0)
+            //     x  x
+            if (i >= 2 && fabs(H[{i - 1, i - 2}] - 0.0) > u)
+                break;
+            else {
+                auto a = H[{i - 1, i - 1}];
+                auto b = H[{i - 1, i}];
+                auto c = H[{i, i - 1}];
+                auto d = H[{i, i}];
+                auto delta = (a - d) * (a - d) + 4 * b * c;
+                if (delta < 0)
+                    m++;
+                else break;
+            }
+        }
+    }
+
+    int l = 0;
+    for (int i = n - 1 - m; i >= 0; i--) {
+        //  x x
+        //  0 x  happens
+        if (i >= 1 && fabs(H[{i, i - 1}] - 0.0) < u) {
+            l = i;
+            break;
+        }
+        else
+            continue;
+    }
+
+    cout << "m: " << m << endl;
+    cout << "l: " << l << endl;
+
+    assert( m >=0 && m <= n);
+    assert( l >=0 && l <= n);
+
+    if(m == n)
+        return true;
+    else
+    {
+        if(n -m > l) {
+            auto H22_slice = Slice{{l, n - m},
+                                   {l, n - m}};
+
+            auto H22 = H[H22_slice];
+            auto FrancisPair = EigenSolver::FrancisQRIter(H22); // H22.rowNum() should > 2!
+            auto H22_ = FrancisPair.first;
+            auto P = FrancisPair.second;
+            H.setSlice(H22_slice, H22_);
+            Q = Q * Matrix(Q.rowNum()).setIdentity().setSlice(H22_slice, P);
+
+            if(l > 0)
+            {
+                auto H12_slice = Slice{{0, l},{l, n-m}};
+                H.setSlice(H12_slice, H[H12_slice] * P);
+            }
+            if(n > n-m)
+            {
+                auto H23_slice = Slice{{l, n-m},{n-m, n}};
+                H.setSlice(H23_slice,P.transpose() * H[H23_slice]);
+            }
+        }
+
+        return false;
+    }
+
+
 }
