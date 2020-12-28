@@ -36,6 +36,11 @@ namespace ReNLA {
         //@return: pair{U, Q} where Q^T A Q = U
         static bool ImplicitQRConvergenceCheck(Matrix& H, Matrix& Q);
 
+        //@brief: get all eigen values
+        //@param: A to be decomposed
+        //@return: vector of diagonal matrix in U where Q^T A Q = U from Schur Decomposition
+        static vector<Matrix> getEigenMatrices(Matrix A);
+
     };
 }
 #endif //EIGENSOLVER_H

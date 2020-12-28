@@ -378,7 +378,10 @@ ostream &ReNLA::operator<<(ostream &os, const Matrix a) {
     for (int i = 0; i < a.nRow; i++) {
         os << "[ ";
         for (int j = 0; j < a.nCol; j++) {
-            os << a[{i, j}];
+            if(fabs(a[{i, j}]) <= 1e-15)
+                os << 0 << "    ";
+            else
+                os << a[{i, j}];
             if (j < a.nCol - 1) os << ", ";
         }
         os << " ]";

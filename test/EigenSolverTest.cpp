@@ -102,7 +102,7 @@ namespace {
         cout << P.transpose() * H * P;
     }
 
-    /*
+
     TEST(EigenSolverTest, implicitQRDecomposition)
     {
         auto A = Matrix({{1.1908,  -1.0565, -2.1707, 0.5913,  0.0000,  0.7310},
@@ -115,14 +115,14 @@ namespace {
         auto H = resultPair.first;
         cout << "H:" << endl;
         cout << H;
-        auto Q = resultPair.second;
-        cout << Q.transpose() * A * Q;
-    }*/
+//        auto Q = resultPair.second;
+//        cout << Q.transpose() * A * Q;
+    }
 
     TEST(EigenSolverTest, implicitQRconvergence)
     {
-//        auto A = Matrix(5).setIdentity();
-//        EigenSolver::ImplicitQRConvergenceCheck(A, A);
+        auto A = Matrix(5).setIdentity();
+        EigenSolver::ImplicitQRConvergenceCheck(A, A);
 
         auto A2 = Matrix({{1, 0, 0, 0, 0},
                              {0, 1, 1, 1, 1},
@@ -130,5 +130,13 @@ namespace {
                              {0, 0, 0, 2, 1},
                              {0, 0, 0, 0, 3}});
         EigenSolver::ImplicitQRConvergenceCheck(A2, A2);
+
+        auto A3 = Matrix({ {1, 1, 0, 0, 0, 0},
+                              {0, 1, 1, 1, 1, 2},
+                              {0, 0, 1, 2, 3, 4},
+                              {0, 0, 2, 2, 1, 1},
+                              {0, 0, 0, 0, 3, 1},
+                              {0, 0, 0, 0, 0, 1}});
+        EigenSolver::ImplicitQRConvergenceCheck(A3, A3);
     }
 }

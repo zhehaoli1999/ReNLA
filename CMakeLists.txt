@@ -9,7 +9,7 @@ add_executable(Chap2 src/Matrix.cpp include/Matrix.h src/LinearSolver.cpp includ
 add_executable(Chap3 include/LSSolver.h src/LSSolver.cpp src/Matrix.cpp src/LinearSolver.cpp src/Vec.cpp src/chap3.cpp src/Timer.cpp)
 add_executable(Chap4 include/SparseMatrix.h src/SparseMatrix.cpp include/IterativeSolver.h src/IterativeSolver.cpp src/Matrix.cpp src/LinearSolver.cpp src/Vec.cpp src/chap4.cpp src/Timer.cpp)
 add_executable(Chap5 include/SparseMatrix.h src/SparseMatrix.cpp include/IterativeSolver.h src/IterativeSolver.cpp src/Matrix.cpp src/LinearSolver.cpp src/Vec.cpp src/chap5.cpp src/Timer.cpp)
-add_executable(Chap6 include/EigenSolver.h src/EigenSolver.cpp include/IterativeSolver.h src/Matrix.cpp src/Vec.cpp src/chap6.cpp src/Timer.cpp)
+add_executable(Chap6 include/LSSolver.h src/LSSolver.cpp  src/LinearSolver.cpp include/LinearSolver.h include/EigenSolver.h src/EigenSolver.cpp include/IterativeSolver.h src/Matrix.cpp src/Vec.cpp src/chap6.cpp src/Timer.cpp)
 
 find_library(GTEST libgtest.a  ./include)
 find_library(GTEST_MAIN libgtest_main.a  ./lib)

@@ -76,6 +76,22 @@ pair<Matrix, Matrix> EigenSolver::upHessenberg(Matrix A)
 pair<Matrix, Matrix> EigenSolver::FrancisQRIter(Matrix H) {
     assert(H.rowNum() == H.colNum());
     int N = H.rowNum();
+//    assert(N >= 2);
+    if(N == 1) // TODO: should not happen in implcit QR decomposition!
+    {
+        return {H, 1};
+    }
+    if(N == 2) // Extra condition: at this time, only householder transform is needed. //TODO.
+    {
+        auto v = householder(H[0]);
+        auto beta = v[0];
+        v[0] = 1;
+
+        auto P = Matrix(2).setIdentity() - beta * Matrix(v) * Matrix(v).transpose();
+        H = P.transpose() * H * P;
+        return {H, P};
+    }
+
     int n = N -1;
     int m = n - 1;
 
@@ -123,7 +139,7 @@ pair<Matrix, Matrix> EigenSolver::FrancisQRIter(Matrix H) {
     auto P_k = Matrix(N).setIdentity()
             .setSlice({{N-2, N},{N-2, N}},
                       Matrix(2).setIdentity() - M);
-    P = P * P_k; // TODO
+    P = P * P_k;
 
     return {H, P};
 }
@@ -148,7 +164,7 @@ pair<Matrix, Matrix> EigenSolver::ImplicitQRDecomposition(Matrix A) {
 bool EigenSolver::ImplicitQRConvergenceCheck(Matrix &H, Matrix &Q) {
     const int n = H.rowNum();
     using Slice = pair<pair<int, int>, pair<int, int>>;
-    const auto u = 1e-10; // prescribed machine precision
+    const auto u = 1e-14; // prescribed machine precision
 
     for (int i = 1; i < n; i++) {
         if (fabs(H[{i, i - 1}]) <= (fabs(H[{i, i}]) + fabs(H[{i - 1, i - 1}])) * u) {
@@ -196,8 +212,8 @@ bool EigenSolver::ImplicitQRConvergenceCheck(Matrix &H, Matrix &Q) {
             continue;
     }
 
-    cout << "m: " << m << endl;
-    cout << "l: " << l << endl;
+//    cout << "m: " << m << endl;
+//    cout << "l: " << l << endl;
 
     assert( m >=0 && m <= n);
     assert( l >=0 && l <= n);
@@ -231,6 +247,24 @@ bool EigenSolver::ImplicitQRConvergenceCheck(Matrix &H, Matrix &Q) {
 
         return false;
     }
+}
 
 
+vector<Matrix> EigenSolver::getEigenMatrices(Matrix A) {
+    auto resultPair = EigenSolver::ImplicitQRDecomposition(A);
+    auto U = resultPair.first;
+    vector<Matrix> result;
+    for(int i = 0; i < U.rowNum(); i++)
+    {
+        if(i+1 <= U.rowNum()-1 && fabs(U[{i+1, i}]) > eps)
+        {
+                result.push_back(U[{{i, i+2}, {i, i+2}}]);
+                i ++;
+        }
+        else{
+            auto m = Matrix(1).setNum(U[{i,i}]);
+            result.push_back(m);
+        }
+    }
+    return result;
 }
