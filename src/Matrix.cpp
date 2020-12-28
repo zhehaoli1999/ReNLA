@@ -200,6 +200,10 @@ Matrix Matrix::setSlice(const pair<pair<int, int>, pair<int, int>> slice, const 
     return (*this);
 }
 
+Matrix Matrix::addToSlice(const pair<pair<int, int>, pair<int, int> > slice, const Matrix & A) {
+    return (*this).setSlice(slice, (*this)[slice] + A);
+}
+
 Matrix ReNLA::operator+(const Matrix &a, const Matrix &b) {
     assert(a.nRow == b.nRow);
     assert(a.nCol == b.nCol);

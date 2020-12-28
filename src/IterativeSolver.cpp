@@ -75,6 +75,7 @@ pair<Vec, int> IterativeSolver::CGIterSolve(const Matrix &A, const Vec &b) {
      *      \beta_k = - < r_{k+1}, r_{k+1} > / <r_k, r_k>
      */
     auto x = Vec(b.size());
+    auto x0 = Vec(b.size()).setOne();
     int step = 0;
     auto r = b - A * x;
     auto rho = r.dot(r);
@@ -83,7 +84,7 @@ pair<Vec, int> IterativeSolver::CGIterSolve(const Matrix &A, const Vec &b) {
 
     auto epsi  = 1e-15 * b.norm2();
     int stepMax = 1e6;
-    while(rho > epsi * epsi && step < stepMax)
+    while((x - x0).normInfin() >= 1e-7  && step < stepMax)
     {
         step += 1;
         if(step > 1)
@@ -93,6 +94,7 @@ pair<Vec, int> IterativeSolver::CGIterSolve(const Matrix &A, const Vec &b) {
         }
         auto w = A*p;
         auto alpha = rho / p.dot(w); // \alpha_k = < r_k, r_k > / ( p_k^T A p_k )
+        x0 = x;
         x = x + alpha * p;           //  x_{k+1} = x_k + \alpha_k * p_k
         r = r - alpha * w;           //  r_{k+1} = r_k - \alpha * A * p_k
         rho_hat = rho;
@@ -213,6 +215,7 @@ pair<Vec, int> IterativeSolver::sparseCGIterSolve(const CSRMatrix &A, const Vec 
      */
 
     auto x = Vec(b.size());
+    auto x0 = Vec(b.size()).setOne();
     int step = 0;
     auto r = b - A * x;
     auto rho = r.dot(r);
@@ -221,7 +224,7 @@ pair<Vec, int> IterativeSolver::sparseCGIterSolve(const CSRMatrix &A, const Vec 
 
     auto epsi  = 1e-8 * b.norm2();
     int stepMax = 1e6;
-    while(rho > epsi * epsi && step < stepMax)
+    while((x - x0).normInfin() >= 1e-7 && step < stepMax)
     {
         step += 1;
         if(step > 1)
@@ -231,6 +234,7 @@ pair<Vec, int> IterativeSolver::sparseCGIterSolve(const CSRMatrix &A, const Vec 
         }
         auto w = A*p;
         auto alpha = rho / p.dot(w); // \alpha_k = < r_k, r_k > / ( p_k^T A p_k )
+        x0 = x;
         x = x + alpha * p;           //  x_{k+1} = x_k + \alpha_k * p_k
         r = r - alpha * w;           //  r_{k+1} = r_k - \alpha * A * p_k
         rho_hat = rho;

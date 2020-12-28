@@ -23,6 +23,7 @@ void hw5_1()
     int size = (N-1) * (N-1);
     auto b = Vec(size);
 
+    // TODO : fix bug of this function.
     // Traverse all nodes in grid
     for (int j = 0; j < N - 1; j++) // y axis
     {
@@ -152,20 +153,26 @@ void hw5_3()
     cout << "====== CG ======" << endl;
     auto result_CG =IterativeSolver::CGIterSolve(A, b);
     auto x_CG = result_CG.first;
+    auto step_CG = result_CG.second;
+    cout << "step: " << step_CG << endl;
     cout << x_CG;
     cout << "====== G-S ======" << endl;
     auto result_GS = IterativeSolver::GaussSeidelIterSolve(A, b);
     auto x_GS = result_GS.first;
+    auto step_GS = result_GS.second;
+    cout << "step: " << step_GS << endl;
     cout << x_GS;
     cout << "====== Jacobi ======" << endl;
     auto result_J =  IterativeSolver::JacobiIterSolve(A, b);
     auto x_J = result_J.first;
+    auto step_J = result_J.second;
+    cout << "step: " << step_J << endl;
     cout << x_J;
 }
 
 int main()
 {
     hw5_1();
-//    hw5_2();
-//    hw5_3();
+    hw5_2();
+    hw5_3();
 }

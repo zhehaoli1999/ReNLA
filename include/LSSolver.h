@@ -14,6 +14,9 @@ namespace ReNLA
     class LSSolver{
     public:
         LSSolver(const Matrix& A, const Vec& b);
+
+        //@brief: do householder transform on x
+        //@return: Vec v. beta stored at v[0] (v[0] should be 1)
         static Vec householder(Vec x); // \beta can be stored at returned Vec[0]
         static pair<Matrix, Vec> QRdecomposition(Matrix A);
         Vec QRSolve();

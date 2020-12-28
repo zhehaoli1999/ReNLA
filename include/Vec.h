@@ -18,7 +18,11 @@ namespace ReNLA {
 
         Vec setOneHot(int idx);
         Vec setIncremental();
+
+        // set all elements in vec to be 1
         Vec setOne();
+
+        // set all elements in vec to be num
         Vec setNum(const long double);
         Vec setRandom(const long double min, const long double max);
 
@@ -26,6 +30,8 @@ namespace ReNLA {
 
         long double operator[] (const int idx) const;
         long double& operator[](const int idx);
+
+        //@brief: [{a, b}] will get Vec([a, b-1])
         Vec operator[](const pair<int, int>) const; // Vec slice
 
         Vec setSlice(int begin, int end, Vec v);
@@ -69,6 +75,8 @@ namespace ReNLA {
         int maxAbsIdx(int begin, int end) const;
         int maxIdx(int begin, int end) const ;
         int minIdx(int begin, int end) const;
+
+        // the abs max element of Vec
         long double absMax() const;
 
         Vec getSign() const;

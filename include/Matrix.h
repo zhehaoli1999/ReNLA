@@ -85,6 +85,8 @@ namespace ReNLA {
 
         Matrix getSlice(const pair<pair<int, int>, pair<int, int>>) const;
 
+        Matrix addToSlice(const pair<pair<int, int>, pair<int, int>>, const Matrix &);
+
         friend ostream &operator<<(ostream &os, const Matrix a);
 
         friend bool operator==(const Matrix &a, const Matrix &b);
