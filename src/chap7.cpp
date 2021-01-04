@@ -10,13 +10,14 @@ using namespace std;
 void hw7_1()
 {
     cout << "==== hw 7.1 ====" << endl;
-    auto v = vector<int>({100});
+    auto v = vector<int>({50, 60, 70, 80, 90, 100});
     for(auto n : v) {
         cout << "===== n = " << n << " ========" << endl;
         auto A = Matrix(n).setTripleDiag(4.0, 1.0, 1.0);
         auto A_ = SymmetricEigenSolver::thresholdJacobi(A).first;
         auto diags = A_.getDiagValue();
         sort(diags.begin(), diags.end());
+        cout << "==== Eigen Value ====" << endl;
         for (auto i: diags) {
             cout << i << endl;
         }
@@ -24,8 +25,22 @@ void hw7_1()
     }
 }
 
+void hw7_2()
+{
+    cout << "==== hw 7.2 ====" << endl;
+    auto A = Matrix(100).setTripleDiag(2.0, -1.0, -1.0);
+    cout << "Minimal eigen value = " << SymmetricEigenSolver::binarySearch(A, 1) << endl;
+    cout << "Max eigen value = " << SymmetricEigenSolver::binarySearch(A, 100) << endl;
+}
+
+void SVD()
+{
+
+}
 int main()
 {
-    hw7_1();
+//    hw7_1();
+//    hw7_2();
+    SVD();
 }
 

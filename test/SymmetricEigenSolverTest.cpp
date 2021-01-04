@@ -19,10 +19,20 @@ namespace {
         auto A = Matrix({ {3, 4, 5},
                              {4, 6, 7},
                              {5, 7, 8}});
-        auto resultPair = SymmetricEigenSolver::thresholdJacobi(A);
+        auto resultPair = SymmetricEigenSolver::thresholdJacobi(A, false);
         auto A_ = resultPair.first;
         auto Q = resultPair.second;
         cout << A_;
         cout << Q.transpose() * A * Q;
+    }
+
+    TEST(SymmetricEigenSolverTest, binarySearch)
+    {
+        auto A = Matrix({ {3, 4, 0.0},
+                          {4, 6, 7},
+                          {0.0, 7, 8}});
+        cout << SymmetricEigenSolver::binarySearch(A, 1) << endl;
+        cout << SymmetricEigenSolver::binarySearch(A, 2) << endl;
+        cout << SymmetricEigenSolver::binarySearch(A, 3) << endl;
     }
 }

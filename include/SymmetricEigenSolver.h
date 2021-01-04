@@ -24,6 +24,10 @@ namespace ReNLA
         //@brief: Do threshold Jacobi method on symmetric matrix A to get eigen values.
         //@return: pair{A', Q}, to make AQ = QA'
         static pair<Matrix, Matrix> thresholdJacobi(Matrix A, bool print_iter_result=true);
+
+        //@brief: Binary search the No.${index} eigen value of matrix A, note that A should be a triangularDiag Matrix
+        //@return: the No.${index} eigen value of A
+        static long double binarySearch(const Matrix& A, const int index);
     };
 }
 
