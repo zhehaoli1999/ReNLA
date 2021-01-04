@@ -38,6 +38,19 @@ namespace
         EXPECT_LE((H3 * x3 - Vec(5).setOneHot(0) * x3.norm2()).normInfin(), 1e-10);
     }
 
+    TEST(LSSolverTest, Givens)
+    {
+        auto a = 3.0;
+        auto b = 4.0;
+
+        auto cs = LSSolver::givens(a, b);
+        auto c = cs.first;
+        auto s = cs.second;
+        cout << "c: "<< c << endl;
+        cout << "s: "<< s << endl;
+        cout << Matrix({{c, s}, {-s ,c}}) * Vec({a, b});
+    }
+
     TEST(LSSolverTest, QRdecomposition)
     {
         auto A = Matrix({{1,2,3},

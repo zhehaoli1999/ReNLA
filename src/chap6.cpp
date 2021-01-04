@@ -38,26 +38,30 @@ void hw6_2()
     p1[0] = 1;
     p1[3] = 1;
     auto M = EigenSolver::getFriendMatrixFromPolynomial(p1);
-    auto result = EigenSolver::getEigenMatrices(M);
-    for(int i = 0; i < result.size(); i++)
-    {
-        cout << result[i];
-    }
+//    auto result = EigenSolver::getEigenMatrices(M);
+//    for(int i = 0; i < result.size(); i++)
+//    {
+//        cout << result[i];
+//    }
+    EigenSolver::getEigenValues(M);
 
     auto A = Matrix({{9.1, 3.0, 2.6, 4.0},
                      {4.2, 5.3, 4.7, 1.6},
                      {3.2, 1.7, 9.4, 0.9},
                      {6.1, 4.9, 3.5, 6.2}});
     cout << "===== x = 0.9 =====" << endl;
-    cout << EigenSolver::ImplicitQRDecomposition(A).first;
+//    cout << EigenSolver::ImplicitQRDecomposition(A).first;
+    EigenSolver::getEigenValues(A);
 
     cout << "===== x = 1.0 =====" << endl;
     A[{2, 3}] = 1.0;
-    cout << EigenSolver::ImplicitQRDecomposition(A).first;
+//    cout << EigenSolver::ImplicitQRDecomposition(A).first;
+    EigenSolver::getEigenValues(A);
 
     cout << "===== x = 1.1 =====" << endl;
     A[{2, 3}] = 1.1;
-    cout << EigenSolver::ImplicitQRDecomposition(A).first;
+//    cout << EigenSolver::ImplicitQRDecomposition(A).first;
+    EigenSolver::getEigenValues(A);
 
 }
 int main()

@@ -7,8 +7,10 @@
 #include <utility>
 
 using namespace ReNLA;
+using namespace std;
 
 auto& householder = LSSolver::householder; // same to const auto householder = ...
+using Complex = complex<double>;
 
 pair<long double, Vec> EigenSolver::powerAlg(const Matrix A) {
     assert(A.rowNum() == A.colNum());
@@ -264,6 +266,37 @@ vector<Matrix> EigenSolver::getEigenMatrices(Matrix A) {
         else{
             auto m = Matrix(1).setNum(U[{i,i}]);
             result.push_back(m);
+        }
+    }
+    return result;
+}
+
+vector<Complex> EigenSolver::getEigenValues(Matrix A, bool print_result) {
+    auto resultPair = EigenSolver::ImplicitQRDecomposition(A);
+    auto U = resultPair.first;
+    vector<Complex> result;
+    for(int i = 0; i < U.rowNum(); i++)
+    {
+        if(i+1 <= U.rowNum()-1 && fabs(U[{i+1, i}]) > eps)
+        {
+            auto a = U[{i,i}];
+            auto b = U[{i, i+1}];
+            auto c = U[{i+1, i}];
+            auto d = U[{i+1, i+1}];
+            auto delta = (a - d) * (a - d) + 4 * b * c;
+            result.emplace_back((a + d )/ 2.0, sqrt(-delta) / 2.0);
+            result.emplace_back((a + d )/ 2.0, - sqrt(-delta) / 2.0);
+            i ++;
+        }
+        else{
+            result.emplace_back(U[{i,i}], 0.0);
+        }
+    }
+    if(print_result)
+    {
+        for(auto & i : result)
+        {
+            cout << i.real() << " + " << i.imag() << "i" << endl;
         }
     }
     return result;

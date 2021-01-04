@@ -35,6 +35,31 @@ Vec LSSolver::householder(Vec x) {
     return v;
 }
 
+pair<long double, long double> LSSolver::givens(long double a, long double b) {
+    long double c =  0.0;
+    long double s =  0.0;
+    if(fabs(b) < eps)
+    {
+        c = 1.0; s = 0.0;
+    }
+    else
+    {
+        if(fabs(b) > fabs(a))
+        {
+            auto t = a / b;
+            s = 1 / sqrt(1 + t*t);
+            c = s * t;
+        }
+        else
+        {
+            auto t = b / a;
+            c = 1 / sqrt(1 + t*t);
+            s = c*t;
+        }
+    }
+    return {c, s};
+}
+
 pair<Matrix, Vec> LSSolver::QRdecomposition(Matrix A) {
     int m = A.shape()[0];
     int n = A.shape()[1];

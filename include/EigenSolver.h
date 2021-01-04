@@ -6,6 +6,7 @@
 #define EIGENSOLVER_H
 #include "commonHeader.h"
 #include "LSSolver.h"
+#include <complex>
 
 namespace ReNLA {
     class EigenSolver {
@@ -40,6 +41,8 @@ namespace ReNLA {
         //@param: A to be decomposed
         //@return: vector of diagonal matrix in U where Q^T A Q = U from Schur Decomposition
         static vector<Matrix> getEigenMatrices(Matrix A);
+
+        static vector<complex<double>> getEigenValues(Matrix A, bool print_result= true);
 
     };
 }

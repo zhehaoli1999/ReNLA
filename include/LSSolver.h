@@ -18,8 +18,13 @@ namespace ReNLA
         //@brief: do householder transform on x
         //@return: Vec v. beta stored at v[0] (v[0] should be 1)
         static Vec householder(Vec x); // \beta can be stored at returned Vec[0]
+
+        //@brief: do givens transform on [..., a, ..., b,...]
+        //@return: pair{cos, sin} to make b'=0 after transform
+        static pair<long double, long double> givens(long double a, long double b);
         static pair<Matrix, Vec> QRdecomposition(Matrix A);
         Vec QRSolve();
+
     private:
         Matrix A;
         Vec b;
