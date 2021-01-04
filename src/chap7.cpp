@@ -33,14 +33,9 @@ void hw7_2()
     cout << "Max eigen value = " << SymmetricEigenSolver::binarySearch(A, 100) << endl;
 }
 
-void SVD()
-{
-
-}
 int main()
 {
-//    hw7_1();
-//    hw7_2();
-    SVD();
+    hw7_1();
+    hw7_2();
 }
 
