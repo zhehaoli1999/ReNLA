@@ -47,3 +47,45 @@ pair<Matrix, Matrix> SymmetricEigenSolver::WilkinsonImplicitQRIter(Matrix T) {
 
     return {T, G};
 }
+
+pair<Matrix, Matrix> SymmetricEigenSolver::thresholdJacobi(Matrix A, bool print_iter_result) {
+    assert(A.rowNum() == A.colNum());
+    const auto n = A.rowNum();
+    const auto sigma = n; // set sigma to n
+    auto delta = A.normNonDiag();
+    auto J = Matrix(n).setIdentity();
+    int k = 0;
+
+    while(delta > 1e-10) {
+
+        if(print_iter_result)
+            cout << "k = " << k << ": delta = " << delta << endl;
+        k ++;
+
+        // Scan all non-diagonal entries in A
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                auto a_pp = A[{i, i}];
+                auto a_qq = A[{j, j}];
+                auto a_pq = A[{i,j}];
+
+                auto tau = ( a_qq - a_pp ) / (2* a_pq);
+                auto sgn_tau = tau > 0.0 ? 1.0 : -1.0;
+                auto t = sgn_tau / (fabs(tau) + sqrt(1 + tau * tau));
+                auto c = 1 / sqrt(1 + t*t);
+                auto s = t * c;
+                auto J_k = Matrix(n).setIdentity();
+                J_k[{i,i}] = c;
+                J_k[{i,j}] = s;
+                J_k[{j,i}] = -s;
+                J_k[{j,j}] = c;
+
+                A = J_k.transpose() * A * J_k;
+                J =  J * J_k ;
+            }
+        }
+        delta /= sigma;
+    }
+
+    return {A, J};
+}

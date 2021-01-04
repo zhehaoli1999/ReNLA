@@ -3,6 +3,7 @@
 //
 #include "../include/Matrix.h"
 #include "gtest/gtest.h"
+#include <cmath>
 
 using namespace ReNLA;
 //using M = Matrix;
@@ -103,6 +104,8 @@ namespace {
         EXPECT_EQ(b.normInfin(), 6);
         auto m = Matrix(3, 3).setTripleDiag(-1, 1, -5);
         EXPECT_EQ(m.normInfin(), 7);
+        EXPECT_EQ(m.normFrobenius(), sqrt(55.0));
+        EXPECT_EQ(m.normNonDiag(), sqrt(52.0));
     }
 
     TEST(MatrixTest, inv)

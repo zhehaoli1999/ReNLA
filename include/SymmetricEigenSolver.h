@@ -12,6 +12,7 @@ namespace ReNLA
 {
     class SymmetricEigenSolver : public EigenSolver
     {
+    public:
         static pair<Matrix, Matrix> tripleDiagonalDecomposition(Matrix A);
 
         //@brief: do implicit symmetric QR iteration with Wilkinson offset
@@ -19,6 +20,10 @@ namespace ReNLA
         static pair<Matrix, Matrix> WilkinsonImplicitQRIter(Matrix A);
 
         static pair<Matrix, Matrix> ImplicitQRDecomposition(Matrix A);
+
+        //@brief: Do threshold Jacobi method on symmetric matrix A to get eigen values.
+        //@return: pair{A', Q}, to make AQ = QA'
+        static pair<Matrix, Matrix> thresholdJacobi(Matrix A, bool print_iter_result=true);
     };
 }
 

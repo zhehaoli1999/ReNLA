@@ -55,6 +55,7 @@ namespace ReNLA {
 
         Matrix setIdentity();
 
+        // set entries to be all zeros
         Matrix setZero();
 
         // set matrix to be a triple diagonal matrix
@@ -141,6 +142,12 @@ namespace ReNLA {
         long double norm1() const;
 
         long double norm2() const;
+
+        // get Frobenius norm of matrix
+        long double normFrobenius() const;
+
+        // get non diagonal norm of matrix: E(A) = \sqrt(||A||_F^2 - \Sum a_{ii}^2)
+        long double normNonDiag() const;
 
         // inverse a matrix
         Matrix inv() const;

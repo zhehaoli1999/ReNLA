@@ -424,6 +424,31 @@ Matrix Matrix::inv() const {
     //TODO chap1 execises
 }
 
+long double Matrix::normFrobenius() const {
+    long double norm = 0.0;
+    for(int i = 0; i < this->rowNum(); i++)
+    {
+        for(int j = 0; j < this->colNum(); j++)
+        {
+            norm += (*this)[j][i] * (*this)[j][i];
+        }
+    }
+    return sqrt(norm);
+}
+
+long double Matrix::normNonDiag() const {
+    long double norm = 0.0;
+    for(int i = 0; i < this->rowNum(); i++)
+    {
+        for(int j = 0; j < this->colNum(); j++)
+        {
+            if(i != j)
+                norm += (*this)[j][i] * (*this)[j][i];
+        }
+    }
+    return sqrt(norm);
+}
+
 Matrix Matrix::lowTriangleInv() const
 {
     // Assert A is a low triangle matrix
